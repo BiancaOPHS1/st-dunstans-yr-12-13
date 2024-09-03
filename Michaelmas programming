@@ -17,3 +17,28 @@ fiveface()
 #-----------------------------------------------------------
 
 
+#----------------
+#subprogram
+#converts centigrade to fahrenheit
+#----------------
+
+def c_to_f():
+   fahrenheit = (centigrade * 1.8) + 32
+   return fahrenheit
+  
+  
+def f_to_c():
+   centi = (fahren-32)/1.8
+   return fahren
+#----------------
+#main program
+#----------------
+
+centigrade = int(input("enter centigrade you wish to convert:"))
+fahren = int(input("enter fahrenheit you wish to convert"))
+print("the temperature in fahrenheit is " , c_to_f () )
+print("the temp in centi is", f_to_c() )
+
+
+
+

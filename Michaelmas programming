@@ -1,0 +1,19 @@
+#subroutine
+#dice face problem
+
+def fiveface():
+  print("0000000000")
+  print("0        0")
+  print("0  #  #  0")
+  print("0    #   0")
+  print("0  #  #  0")
+  print("0        0")
+  print("0000000000")
+
+
+#mainprogram
+fiveface()
+
+#-----------------------------------------------------------
+
+

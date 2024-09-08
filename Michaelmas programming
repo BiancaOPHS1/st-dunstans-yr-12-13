@@ -40,5 +40,115 @@ print("the temperature in fahrenheit is " , c_to_f () )
 print("the temp in centi is", f_to_c() )
 
 
+#----------------------------------------------------------
+
+digits = [0,1,2,3,4,5,6,7,8,9]
+character = ["a","b","c","d","A","B","C","D","@","#","!","£"]
+alphanumerics = digits + character 
+print(alphanumerics)
+
+#----------------------------------------------------------
+
+#fish tank problem 
+#subprogram 
+
+def fishtank():
+  volume = (length * depth * height)/1000
+  print(round(volume,2))
+
+
+#main program
+length = float(input("enter the length of the fish tank "))
+depth = float(input("enter the depth of the fish tank "))
+height = float(input("enter the height of the fish tank "))
+
+
+fishtank()
+
+#-----------------------------------------------------------
+
+#microscopy 
+#subprogram 
+
+def microscopy():
+  image_size = imageSize * (10**4)
+  magnification = image_size /actualSize
+  print(round(magnification))
+  
+  
+#main program 
+imageSize = float(input("enter the image size of the cell in cm"))
+actualSize = float(input("enter the actual size of the cell in micrometers"))
+
+microscopy()
+
+#---------------------------------------------------------
+
+#carpet cost 
+#subprogram 
+
+def carpetcost():
+  area = width * length
+  underlay = 3 * area
+  gripper = (2* width)+(2*length)
+  fittingFee = 50
+  carpet = width * length * price
+  total = carpet + fittingFee + gripper + underlay
+  print(round(total,2))
+
+  
+#main program 
+width = int(input("enter the width of the room"))
+length = int(input("enter the length of the room"))
+price = float(input("enter the price of the carpet"))
+
+
+
+carpetcost()
+
+#--------------------------------------------------------------
+
+#energy bill calculator 
+#subprogram
+
+
+def energyBill ():
+  unitsUsed = currentRead - previousRead
+  calorificValue = 39.3
+  kilowatts = (unitsUsed* 1.022*calorificValue)/3.6
+  totalEnergy = kilowatts *2.84
+  print(round(totalEnergy,2))
+
+#main program 
+previousRead = int(input("enter the previous meter reading"))
+currentRead = int(input("enter the current meter reading"))
+
+
+energyBill ()
+
+#-------------------------------------------------------------
+
+#circle properties 
+#subprogram 
+
+def circle ():
+  radius = diameter/2
+  areaOfCircle = pi * (radius**2)
+  circumference = diameter * pi
+  arcLength = (circumference * arcAngle)/360
+  print("radius =", radius)
+  print("the area is", round(areaOfCircle,2))
+  print("circumference =", round(circumference,2))
+  print("arc length is", round(arcLength,2))
+  
+#main program 
+diameter = int(input("enter the diameter of the circle"))
+arcAngle = int(input("enter the arc angle of the circle"))
+pi =3.1415926535
+
+circle()
+
+#--------------------------------------------------------------
+
 
 

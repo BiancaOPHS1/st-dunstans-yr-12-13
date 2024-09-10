@@ -1,0 +1,26 @@
+#iterative binary search 
+#program returns true and index of array if present
+#otherwise returns false
+
+
+
+#subprogram 
+def binarySearch(array,search):
+  low = array[0] #the 
+  high = len(array) - 1 
+  while low <= high: # if low is higher the high then value is not on the list 
+    mid = (high + low)//2 #finds the middle value of the list 
+    if array[mid]< search: #looks for value after it has compared in the upper half 
+      low = mid + 1 
+    elif array[mid]> search: # looks for value in lower half 
+      high = mid - 1
+      return mid, "true" # return the number found and true
+    else:
+      return "false"
+
+
+
+
+#main program 
+ search = int(input("enter the integar you are looking for"))
+ 

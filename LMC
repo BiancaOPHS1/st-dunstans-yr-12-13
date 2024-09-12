@@ -1,0 +1,29 @@
+     INP 
+        STA NUM1
+        INP
+        STA NUM2
+        ADD NUM1
+        OUT
+NUM1    DAT
+NUM2    DAT
+
+#--------------------------------------
+
+  INP 
+        STA NUM1
+        INP
+        STA NUM2 
+        INP
+        STA NUM3
+        ADD NUM2 
+        STA TOTAL 
+        ADD NUM1
+        STA TOTAL2
+        OUT 
+NUM1    DAT
+NUM2    DAT
+NUM3    DAT
+TOTAL   DAT
+TOTAL2  DAT
+
+#----------------------------------

@@ -150,5 +150,91 @@ circle()
 
 #--------------------------------------------------------------
 
+#ball pit problem 
+#subprogram 
+
+def ballPit():
+  volumeBallPit = pi *ballPitHeight * (ballPitRadius**2)
+  print("the volume of the ball pit is",round(volumeBallPit,2))
+  volumeBall = (4/3)* pi * (ballRadius ** 3)
+  print("the volume of a ball is", round(volumeBall,1))
+  ballsInPit = (volumeBallPit/volumeBall)* 0.75
+  print("the number of balls that can fit in the ball pit is", round(ballsInPit))
+  
+
+
+#main program 
+ballRadius = float(input("enter the radius of the balls "))
+ballPitRadius = float(input("enter the radius of the ball pit"))
+ballPitHeight = float(input("enter the height of the ball pit"))
+pi = 3.1415926535
+
+ballPit()
+
+#---------------------------------------------------------------
+
+#driving test problem 
+#subprogram
+
+def faults():
+  if minorfaults < 16:
+    print("pass")
+  else:
+    print("fail")
+
+
+
+#main program
+minorfaults = int(input("enter how many minor faults they have done."))
+
+faults()
+
+#---------------------------------------------------------------
+
+#max program
+#returns the larger of two numbers
+#subprogram 
+
+def max():
+  if num1 > num2:
+    print(num1)
+  elif num1 == num2:
+    print("both numbers are the same.")
+  else:
+    print(num2)
+
+#main program 
+
+num1 = int(input("enter a number"))
+num2 = int(input("enter another number"))
+
+
+max()
+
+#---------------------------------------------------------------
+
+#states of water 
+#depending on the temp of water it will return whether solid liquid or gas
+#subprogram 
+
+def statesOfWater():
+  if temp <= 0:
+    print("the water is in a solid state")
+  elif temp > 0 and temp < 100:
+    print("the water is liquid state")
+  else:
+    print("the water has evaporated so it is a gas.")
+
+
+
+#main program 
+
+temp = float(input("enter the temp of the water"))
+
+statesOfWater()
+
+#-------------------------------------------------------------
+
+
 
 

@@ -256,6 +256,41 @@ occupation()
 
 #---------------------------------------------------------------
 
+#currency converter 
+#£1 = $1.31
+#£1 = 1.18 euro
+#£1 = 9.31 yuan
+#£1 = 184.82 yen 
+#subprogram 
+
+
+def currencyConverter():
+  if moneyExchange == "USD":
+    americanDollars = moneyAmount * 1.31
+    print("$",round(americanDollars,2))
+  elif moneyExchange == "EURO":
+    euro = moneyAmount * 1.18
+    print(round(euro,3) , "euro")
+  elif moneyExchange == "YUAN":
+    yuan = moneyAmount * 9.31
+    print(round(yuan,3), "yuan")
+  else:
+    yen = moneyAmount * 184.82
+    print(round(yen,3), "yen")
+
+
+#main program 
+moneyType = str(input("What would you like to exchange GBP to? USD...Euro...Yuan or Yen"))
+moneyExchange = moneyType.upper()
+moneyAmount = float(input("enter the amount in pounds you would like to exchange"))
+
+
+
+
+currencyConverter()
+
+#--------------------------------------------------------------
+
 
 
 

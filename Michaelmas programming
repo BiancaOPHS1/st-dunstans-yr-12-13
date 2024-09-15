@@ -235,6 +235,27 @@ statesOfWater()
 
 #-------------------------------------------------------------
 
+#career quote problem 
+#subprogram 
+
+def occupation():
+  if job1 == "ENGINEER":
+    print("The engineer has been, and is, a maker of history.")
+  elif job1 == "DEVELOPER":
+    print("Logical thinking, passion and perseverance is the paint on your palette.")
+  elif job1 == "ANALYST":
+    print("Seeing what other people can’t see gives you great vision.")
+  else:
+    print("I'm sorry. We could not find a quote for your job.")
+
+#main program 
+job = str(input("enter your occupation"))
+job1 = job.upper()
+
+occupation()
+
+#---------------------------------------------------------------
+
 
 
 

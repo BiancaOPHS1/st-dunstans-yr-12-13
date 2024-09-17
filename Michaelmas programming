@@ -292,5 +292,23 @@ currencyConverter()
 #--------------------------------------------------------------
 
 
+def functionDose():
+  if nitrateLevel >10:
+    return 3
+  elif nitrateLevel >2.5 and nitrateLevel <10 :
+    return 2
+  elif nitrateLevel >1 and nitrateLevel <2.5 :
+    return 1
+  else:
+    return 0.5
+
+
+#main program 
+
+nitrateLevel = float(input("enter the nitrate level."))
+
+
+print(functionDose())
+
 
 

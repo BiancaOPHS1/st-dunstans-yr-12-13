@@ -24,3 +24,23 @@ def binarySearch(array,search):
 #main program 
  search = int(input("enter the integar you are looking for"))
  
+#----------------------------------------------------------------------------
+
+#calculate litres of paint 
+#subprogram 
+
+
+
+
+
+
+
+
+
+
+#main program 
+length = float(" enter the length of the wall")
+width = float("enter the width of the wall")
+noOfWall = int("enter the number of walls needed to paint")
+noOfCoats = int("enter the number of coats of paint needed")
+

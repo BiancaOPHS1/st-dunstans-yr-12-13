@@ -311,4 +311,35 @@ nitrateLevel = float(input("enter the nitrate level."))
 print(functionDose())
 
 
+#---------------------------------------------------------------
+
+#periodic table 
+#subprogram 
+
+element1 = [["hydrogen",1,1],["helium",4,8],["beryllium",6,2], ["boron",10,3],["carbon",12,6], ["nitrogen",14,7]]
+
+def elements():
+  match element:
+    case "hydrogen":
+      print(element1[0])
+    case "helium":
+      print(element1[1])
+    case "beryllium":
+      print(element1[2])
+    case "boron":
+      print(element1[3])
+    case "carbon":
+      print(element1[4])
+    case "nitrogen":
+      print(element1[5])
+
+#main program
+
+element = input("enter an element")
+
+elements()
+
+
+#------------------------------------------------------------
+
 

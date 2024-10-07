@@ -342,4 +342,67 @@ elements()
 
 #------------------------------------------------------------
 
+#exam grade problem
+#subprogram
 
+def grade():
+  if mark > 80:
+    print("your grade is ", 9 )
+  elif mark > 67 and mark <80:
+    print("your grade is ", 8 )
+  elif mark > 54 and mark < 67:
+    print("your grade is", 7 )
+  elif mark> 41 and mark <54:
+    print("your grade is", 6)
+  elif mark > 31 and mark <41:
+    print("your grade is",5)
+  elif mark> 22 and mark<31 :
+    print("your grade is",4)
+  elif mark>13 and mark<22:
+    print("your grade is",3)
+  elif mark>4 and mark<13:
+    print("your grade is",2)
+  elif mark>2 and mark <4:
+    print("your grade is",1)
+  else:
+    print("your grade is U")
+      
+
+
+#main program 
+
+mark = int(input("enter the mark you recieved in the test:"))
+
+grade()
+
+#--------------------------------------------------------
+
+#day format 
+#subprogram 
+
+daysOfWeek = [["monday",1, "M"],["tuesday",2,"Tu"],["Wednesday",3,"W"], ["Thursday",4,"Thu"],["Friday",5, "F"],["Saturday",6, "sat"],["sunday",7, "Sun"]]
+
+
+def dayFormat():
+  if weekday == 1:
+    print(daysOfWeek[0])
+  elif weekday ==2:
+    print(daysOfWeek[1])
+  elif weekday ==3:
+    print(daysOfWeek[2])
+  elif weekday ==4:
+    print(daysOfWeek[3])
+  elif weekday ==5:
+    print(daysOfWeek[4])
+  elif weekday ==6:
+    print(daysOfWeek[5])
+  else:
+    print(daysOfWeek[6])
+
+
+
+#main program 
+weekday = int(input("enter an integar number from 1 to 7"))
+
+
+dayFormat()

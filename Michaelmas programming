@@ -438,3 +438,44 @@ num1 = int(input("enter a number"))
 num2 = int(input("enter another number"))
 
 largerNumber()
+
+#------------------------------------------------------
+#leap year problem 
+#subprogram
+
+def leapYear():
+  if ( year % 4) == 0:
+    print("true, it is a leap year")
+  elif (year % 100) == 0:
+    print("false, it is not a leap year")
+  elif (year% 400)== 0:
+    print("true, it is a leap year")
+  else:
+    print("it is not a leap year")
+
+
+
+#main program 
+
+year = int(input("enter a year"))
+
+leapYear()
+
+#---------------------------------------------------
+
+#hours in a day problem 
+#subprogram
+
+def hoursIntoDays():
+  days = hours//24
+  hour = hours % 24
+  print("this is",days,"days",hour,"hours")
+
+
+
+#main program
+hours= int(input("enter the amount of hours"))
+
+hoursIntoDays()
+#-------------------------------------------------
+

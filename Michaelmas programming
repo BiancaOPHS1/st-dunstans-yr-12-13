@@ -406,3 +406,19 @@ weekday = int(input("enter an integar number from 1 to 7"))
 
 
 dayFormat()
+#--------------------------------------------------------
+#ployhedral dice problem 
+#subprogram 
+
+import random
+
+def rollDice():
+  print(random.randrange(0,facesOfDice))
+  
+  
+#main propgram 
+facesOfDice = int(input("enter the number of faces of dices"))
+
+
+rollDice()
+#------------------------------------------------------

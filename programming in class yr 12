@@ -44,3 +44,25 @@ width = float("enter the width of the wall")
 noOfWall = int("enter the number of walls needed to paint")
 noOfCoats = int("enter the number of coats of paint needed")
 
+#---------------------------------------------------------------------------
+
+import threading 
+import time
+
+def func():
+  print('ran')
+  time.sleep(0.1)
+  print("done")
+  time.sleep(0.85)
+  print("now done")
+  
+  
+
+x = threading.Thread(target=func)
+x.start()
+print(threading.activeCount())
+time.sleep(1)
+print("finally")
+
+
+#---------------------------------------------------------------------------

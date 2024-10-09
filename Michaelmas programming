@@ -530,3 +530,49 @@ def divisibleProblem():
 divisibleProblem()
 
 #-----------------------------------------------------
+
+#dogs life problem 
+#subprogram
+
+def humanToDogYears():
+  if humanYears <= 2:
+    dogYears = humanYears * 12
+  else:
+    dogYears = 24 + (6 * humanYears) - 2
+  print("your dog is",dogYears, "in dog years!")
+
+
+
+#main program
+humanYears = float(input("enter how old your dog is in human years (does not have to be whole number)"))
+
+humanToDogYears()
+#---------------------------------------------------
+#electric car problem 
+#subprogram
+
+minimumCharge = 3
+minimumPoints = 22
+
+def totalCost():
+  if noOfMinutes < 15:
+    total = 1 + minimumCharge
+  else:
+    extraMins = noOfMinutes - 15
+    total = 1 + minimumCharge + (extraMins * 0.2)
+  print("the cost is" , round(total,2))
+  
+  
+def numOfPoints():
+  totalPoints = minimumPoints + (noOfMinutes * 1.5)
+  print("your total points earned is ",totalPoints)
+
+
+
+#main program 
+noOfMinutes = int(input("enter the number of minutes spent charging your electric car"))
+
+totalCost()
+numOfPoints()
+
+#------------------------------------------------------

@@ -478,4 +478,55 @@ hours= int(input("enter the amount of hours"))
 
 hoursIntoDays()
 #-------------------------------------------------
+#dice problem 
+#subprogram 
 
+import random 
+
+def diceGame():
+  die1 = random.randint(0,6)  #a random number from 0-6
+  die2 =random.randint(0,6)
+  die3 = random.randint(0,6)
+  print("you rolled",die1)
+  print("you rolled",die2)
+  print("you rolled",die3)
+  if (die1 == die2) and (die2 == die3):
+    total = die1 + die2 + die3
+    print(total)
+  elif die1 == die2 !=  die3:
+    total = (die1 +die2)- die3
+    print(total)
+  elif die2 == die3 != die1:
+    total = (die2+ die3)- die1
+    print(total)
+  elif die1 == die3 != die2:
+    total = (die1 + die3)- die2
+    print(total)
+  else:
+    print("you scored 0")
+    
+
+#main program
+
+diceGame()
+#--------------------------------------------------------
+
+#divisible problem
+#subprogram
+
+def divisibleProblem():
+  num1 = int(input("enter a whole number "))
+  num2 = int(input("enter a whole number "))
+  if num1 == 0 or num2 == 0:
+    print("false")
+  elif num1 % num2 == 0:
+    print("true")
+  else:
+    print("false")
+
+
+#main program
+
+divisibleProblem()
+
+#-----------------------------------------------------

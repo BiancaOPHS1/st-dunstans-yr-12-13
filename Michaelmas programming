@@ -576,3 +576,61 @@ totalCost()
 numOfPoints()
 
 #------------------------------------------------------
+
+#tweet problem 
+#subprogram
+
+
+def goodPost():
+  if len(tweet) <= 20:
+    print("true")
+  else:
+    print("false")
+
+
+#main program
+tweet = str(input("enter the tweet"))
+
+goodPost()
+
+#-------------------------------------------------------
+
+#initial and surname problem
+#subprogram
+
+def foreSurName():
+  firstLetter = forename[0]
+  upperletter = firstLetter.upper()
+  capsSurname = surname.upper()
+  fullName = upperletter + capsSurname
+  print(fullName)
+
+
+#main program
+forename = input("enter your first name")
+surname = input("enter your surname")
+
+foreSurName()
+
+#----------------------------------------------------
+
+#airplane ticket 
+#subprogram
+
+def destination():
+  
+
+
+
+
+
+
+
+
+
+#main program
+
+takeOffDes = input("enter the city you are travelling from")
+arrivalDes =input("enter the city you are travelling to")
+
+#------------------------------------------------

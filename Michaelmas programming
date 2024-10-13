@@ -618,19 +618,46 @@ foreSurName()
 #subprogram
 
 def destination():
+  takeOff = takeOffDes[:4]  #takes the first four letters of the take off name2
+  arrival = arrivalDes[:4] #takes the first four letters of the arrival destination
+  takeOff = takeOff.upper()
+  arrival = arrival.upper()
+  total = print(takeOff ,"-" ,arrival )
   
-
-
-
-
-
-
-
-
 
 #main program
 
 takeOffDes = input("enter the city you are travelling from")
 arrivalDes =input("enter the city you are travelling to")
 
+destination()
+
 #------------------------------------------------
+
+#teacher code problem 
+#subprogram 
+
+def initials():
+  first_name = firstName[:1]
+  first_name = first_name.upper()
+  sur_name = surName[:1]
+  sur_name = sur_name.upper()
+  if middleName == "":
+    middle_name = "Z"
+  else:
+    middle_name = middleName[:1]
+    middle_name = middle_name.upper()  
+  total = first_name + middle_name +sur_name
+  print(total)
+
+
+#main program
+
+firstName = input("enter your first name")
+middleName = input("enter your middle name ")
+surName = input("enter your surname")
+
+initials()
+
+#----------------------------------------------
+

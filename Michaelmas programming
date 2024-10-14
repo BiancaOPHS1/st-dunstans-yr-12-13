@@ -661,3 +661,37 @@ initials()
 
 #----------------------------------------------
 
+#valid address problem 
+#subprogram 
+
+def validation():
+  length =len(email)
+  for x in range[0,length]:
+    if email != "@" and email != ".":
+      print("false, the email is not valid")
+    else:
+      print("true, the email is valid")
+
+#main program
+email = str(input("enter your email"))
+
+
+validation()
+#--------------------------------------------
+#name separator problem
+#subprogram
+
+def nameSeparator():
+  full_name = fullName.split()
+  #this splits the full name into two different strings
+  print(full_name[0])
+  print(full_name[1])
+
+#main program 
+
+fullName = str(input("enter your full name"))
+
+
+nameSeparator()
+#-------------------------------------------
+

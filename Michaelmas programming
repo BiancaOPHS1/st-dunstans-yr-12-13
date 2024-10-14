@@ -695,3 +695,35 @@ fullName = str(input("enter your full name"))
 nameSeparator()
 #-------------------------------------------
 
+#naming convetion 
+#subprogram
+
+def namingConvention():
+  if choice == "kebab case":
+    word1= identifier1.lower()
+    word2 = identifier2.lower()
+    x ="-"
+    print(word1+x+word2)
+  elif choice == "camel case":
+    word1 = identifier1.lower()
+    word2 = identifier2.capitalize()
+    total = print(word1 +word2)
+  elif choice == "pascal case":
+    word1 = indentifier.capitalize()
+    word2 = identifier.capitalize()
+    total = print(word1 +word2)
+  else:
+    word1= identifier1.lower()
+    word2 = identifier2.lower()
+    y ="_"
+    print(word1+y+word2)
+    
+
+
+#main program
+identifier1  = input("enter the first word identifier")
+identifier2 = input("enter the second word identifier")
+choice = input("enter the format (kebab case, snake case, camel case or pascal case")
+
+namingConvention()
+#---------------------------------------------------

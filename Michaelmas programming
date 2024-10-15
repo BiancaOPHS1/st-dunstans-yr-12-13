@@ -727,3 +727,27 @@ choice = input("enter the format (kebab case, snake case, camel case or pascal c
 
 namingConvention()
 #---------------------------------------------------
+
+#acsii and ebcdic
+#subprogram
+
+letter = input("enter a letter from the english alphabet")
+
+
+def characterSets():
+  letters = letter.upper()
+  asciiTranslation = ord(letters)
+  ascii = print("the number for this in ASCII is",asciiTranslation)
+  if asciiTranslation >64 and asciiTranslation <74:
+    ebcdicTranslation = asciiTranslation + 128 
+  elif asciiTranslation >73 and asciiTranslation < 83:
+    ebcdicTranslation = asciiTranslation + 135
+  else:
+    ebcdicTranslation = asciiTranslation + 143
+  print("the number for this in ebcdic is",ebcdicTranslation)  
+    
+#main program
+
+characterSets()
+
+#-----------------------------------------------

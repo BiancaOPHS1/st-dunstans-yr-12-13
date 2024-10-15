@@ -751,3 +751,19 @@ def characterSets():
 characterSets()
 
 #-----------------------------------------------
+#times table problem 
+#subprogram
+
+def timesTable():
+  x = 0 
+  while x != 12:
+    x = x +1
+    total = x * number 
+    print(total)
+    
+#main program 
+
+number = int(input("enter a number from 1 to 12 for the times table"))
+
+timesTable()
+#-----------------------------------------------

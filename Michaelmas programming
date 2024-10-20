@@ -767,3 +767,17 @@ number = int(input("enter a number from 1 to 12 for the times table"))
 
 timesTable()
 #-----------------------------------------------
+
+#discount counter problem 
+#subprogram
+
+currentSale = 10
+
+
+while currentSale != 60 or currentSale < 60:
+  import random
+  randnum = random.randint(1,10)
+  currentSale = currentSale + randnum
+  print(currentSale,"%")
+  
+#-----------------------------------------------

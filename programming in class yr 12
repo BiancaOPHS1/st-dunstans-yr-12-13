@@ -83,3 +83,15 @@ for _ in range(2):
 print("done")
 
 #------------------------------------------------------------------
+
+
+def reverse_string(s):
+  if len(s)<= 1:
+    return s
+  else:
+    return s[-1]+ reverse_string(s[:-1])
+    
+    
+print ("reversed string is:", reverse_string("racecar"))
+
+#-----------------------------------------------------------------

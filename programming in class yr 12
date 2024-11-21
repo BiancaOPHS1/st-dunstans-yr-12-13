@@ -95,3 +95,15 @@ def reverse_string(s):
 print ("reversed string is:", reverse_string("racecar"))
 
 #-----------------------------------------------------------------
+
+def fib(n):
+  
+   while n<=30 and n>= 3:
+    return fib(n-1) + fib(n-2)
+   else:
+     return n
+    
+
+print(fib(3))
+
+#------------------------------------------------------------

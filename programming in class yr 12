@@ -107,3 +107,23 @@ def fib(n):
 print(fib(3))
 
 #------------------------------------------------------------
+
+
+num1 = int(input("enter a number between 0 and 30"))
+#ask user to enter a random number from 0 to 30 
+
+total = 0
+
+if num1 == randomInt: 
+  if num1 % 2 == 0:
+    total = num1 * 2
+  elif num1 % 10 == 0: 
+    total = num1 * 3
+  elif num1<5:
+    total= num1 * 2
+
+print(f"result: {randomInt}")
+if (num1 == randomInt):
+  print("you win")
+else:
+  print("you loose")

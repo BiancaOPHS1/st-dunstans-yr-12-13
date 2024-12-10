@@ -127,3 +127,18 @@ if (num1 == randomInt):
   print("you win")
 else:
   print("you loose")
+
+#----------------------------------------------------
+
+class Animal():
+  name = ""
+  species = ""
+  diet = ""
+  enclosure = ""
+  def _init_(self,name, species,diet,enclosure):
+    self.name = name 
+    self.species = species
+    self.diet = diet
+    self.enclosure = enclosure
+  def name(self):
+     

@@ -781,3 +781,27 @@ while currentSale != 60 or currentSale < 60:
   print(currentSale,"%")
   
 #-----------------------------------------------
+
+
+#prime number problem 
+
+number = int(input("enter a number"))
+
+def isPrime():
+  if number <1:
+    print("this number is not prime")
+  else:
+    for i in range(number,0, -1):
+      remainder= number% (number -1)
+    count = 0
+    if remainder == 0:
+     count = count+1
+    if count == 2:
+     print("number is prime")
+    else:
+     print("number is not prime")
+
+
+isPrime()
+
+#------------------------------------------

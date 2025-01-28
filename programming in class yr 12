@@ -151,3 +151,42 @@ word2 = word[0:1]
 print(word1+word2+ "ay")
 
 #--------------------------------------------
+
+word = input("enter a word")
+word1 = word[0:4]
+print(word1)
+
+#----------------------------------------------
+
+height = float(input("enter the height"))
+width = float(input("enter width"))
+depth = float(input("enter the depth"))
+coats_of_paint = int(input("enter the the number of coats of paint"))
+doorArea = float(input("enter the total area taken up by the doors"))
+
+total= (height* width* depth* coats_of_paint)- doorArea
+amountOfPaint = total/11
+print(round(amountOfPaint, 2))
+
+
+#----------------------------------------------
+
+
+tempConverter = input("do you want to to convert to celcius or fahrenheit")
+number = int(input("enter the number you want to convert"))
+
+def convertTofahrenheit():
+  fheit = (number*1.8) +32
+  print(round(fheit,1))
+  
+  
+def convertToCelcius():
+  celcius = (number-32)/1.8
+  print(round(celcius,1))
+  
+if tempConverter == "celcius":
+  convertToCelcius()
+else:
+  convertTofahrenheit()
+
+#---------------------------------------------

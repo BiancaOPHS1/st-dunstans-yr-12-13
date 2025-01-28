@@ -141,4 +141,13 @@ class Animal():
     self.diet = diet
     self.enclosure = enclosure
   def name(self):
-     
+
+#-------------------------------------------------
+
+
+word = input("input a word")
+word1 = word[1:]
+word2 = word[0:1]
+print(word1+word2+ "ay")
+
+#--------------------------------------------

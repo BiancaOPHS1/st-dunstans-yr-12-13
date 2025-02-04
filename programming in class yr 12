@@ -190,3 +190,15 @@ else:
   convertTofahrenheit()
 
 #---------------------------------------------
+
+
+class itemforsale:
+  def __init__(self,pitemname,pprice):
+    self.itemname = pitemname
+    self.price = pprice
+    self.discount =0 
+    
+mushypeas = itemforsale("mushypeas",0.89)
+print(mushypeas.price)
+print(mushypeas.itemname)
+

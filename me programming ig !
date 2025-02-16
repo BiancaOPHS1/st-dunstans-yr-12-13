@@ -1,0 +1,33 @@
+#simple life calculator 
+
+def vat():
+    totalVAT = number * 0.21
+    print(round(totalVAT,2))
+    
+def mod():
+    modulus = num1%num2
+    print("the modulus is",modulus)
+
+def div():
+    total = num3//num4
+    print("div is:",total)
+
+#--------------------------------
+#main program 
+
+choice = input("which calculator do you want to use? VAT, modulus, and div")
+
+if choice == "VAT" or choice =="vat":
+    number= int(input("enter a number:"))
+    vat()
+elif choice == "modulus":
+    num1 = int(input("enter a number"))
+    num2 = int(input("enter a second number"))
+    mod()
+else:
+    num3 =int(input("enter a number:"))
+    num4 = int(input("enter another number:"))
+    div()
+
+
+=====================================================================

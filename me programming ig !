@@ -31,3 +31,26 @@ else:
 
 
 =====================================================================
+
+#ordering list 
+
+array= []
+
+def appendToArray():
+    array.append(num1,num2,num3,num4,num5)
+    print(array)
+
+#----------------------
+#main program 
+
+num1= int(input("enter a number:"))
+num2= int(input("enter a number:"))
+num3= int(input("enter a number:"))
+num4= int(input("enter a number:"))
+num5= int(input("enter a number:"))
+
+appendToArray()
+
+NOT DONE
+
+======================================================================

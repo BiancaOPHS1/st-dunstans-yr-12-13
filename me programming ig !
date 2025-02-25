@@ -54,3 +54,35 @@ appendToArray()
 NOT DONE
 
 ======================================================================
+
+#-----------------------------------------------------
+array = []
+
+def addToArray():
+    num1 = int(input("enter a number\n"))
+    num2 = int(input("enter a number\n"))
+    num3 = int(input("enter a number\n"))
+    num4 = int(input("enter a number\n"))
+    num5 = int(input("enter a number\n"))
+    array.append(num1)
+    array.append(num2)
+    array.append(num3)
+    array.append(num4)
+    array.append(num5)
+    print(array)
+
+
+def orderList():
+    for i in range(len(array)):
+        for x in range(0,len(array)-1):
+            if array[x] > array[x+1]:
+                temp = array[x+1]
+                array[x+1]= array[x]
+                array[x]= temp
+    print(array) 
+
+
+
+#------------------main program-------------------------
+addToArray()
+orderList()

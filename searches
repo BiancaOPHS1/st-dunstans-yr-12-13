@@ -1,0 +1,33 @@
+array = []
+
+def appendArray():
+    array.append(num1)
+    array.append(num2)
+    array.append(num3)
+    array.append(num4)
+    array.append(num5)
+    
+
+def linearSearch(array):
+    for i in range(0,len(array)-1):
+        if array[i] == searchNum:
+            print("number found in index", array[i])
+        if array[i] == (len(array)-1):
+            print("number not found in list") 
+                        
+
+
+
+#main program ---------------------------------------
+num1 = int(input("enter a number\n"))
+num2 = int(input("enter a number\n"))
+num3 = int(input("enter a number\n"))
+num4 = int(input("enter a number\n"))
+num5 = int(input("enter a number\n"))
+
+searchNum = int(input("enter the number you are searching for\n")) 
+
+appendArray()
+print(array)
+
+linearSearch(array)

@@ -197,6 +197,21 @@ class itemforsale:
     self.itemname = pitemname
     self.price = pprice
     self.discount =0 
+
+#----------------------------------------------
+
+#=================================
+def timeValue():
+    hundreds = time[0:2]
+    notHundreds = time[3:5]
+    print(hundreds+notHundreds)
+ 
+
+#main program ======================
+time =input("enter a time\n")
+timeValue()
+
+#----------------------------------------------
     
 mushypeas = itemforsale("mushypeas",0.89)
 print(mushypeas.price)

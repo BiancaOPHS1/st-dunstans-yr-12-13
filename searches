@@ -37,7 +37,20 @@ linearSearch(array)
 #==========================================================================
 
 
-appendArray()
-print(array)
+#binary search===============
+array = []
 
-linearSearch(array)
+
+def list(number):
+    for i in range(0,numbersInList):
+        number[i] = int(input("enter a number\n"))
+        array.append(number[i])
+        print(array) 
+        
+
+    
+
+#main program
+numbersInList = int(input("enter the number of items you want in your list\n"))
+
+list(array)

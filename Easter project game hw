@@ -1,15 +1,28 @@
-import pygame
 
-pygame.init()
+import pygame
+from pygame.locals import * 
+#this imports the modules that are needed for the game 
+
+pygame.init() #pygame is initialised 
+ 
 
 SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_HEIGHT = 800
+#this is the height and width of the game screen in pixels 
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))#implements the screen 
+pygame.display.set_caption("Flappy Bird")#gives the name of the game  
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+#load images
+bg = pygame.image.load(r"img\bg.png")
 
 
 run = True
 while run:
+
+    screen.fill((0,0,0))
+    
+    #allows you to move forward,backward,up and down using keys 
     key = pygame.key.get_pressed()
     if key [pygame.K_a] == True:
         player.move_ip(-1,0)
@@ -20,10 +33,19 @@ while run:
     elif key[pygame.K_s]== True:
         player.move_ip(0,1)
     
-
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
+    pygame.display.update()#updates the game every time I add something new
+
+    
+
+
+
+pygame.quit()    
+
 
 
 

@@ -1,5 +1,4 @@
-  
-
+     
 import pygame
 from pygame.locals import * 
 #this imports the modules that are needed for the game 
@@ -77,88 +76,4 @@ while run:
 
 
 
-pygame.quit()    
-import pygame
-from pygame.locals import * 
-#this imports the modules that are needed for the game 
-
-pygame.init() #pygame is initialised 
-
-clock = pygame.time.Clock()#timer is used to lock a frame rate so that the game runs at the same speed 
-fps = 60 #frame rate for how fast the ground is moving 
-
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
-#this is the height and width of the game screen in pixels 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))#implements the screen 
-pygame.display.set_caption("Flappy Bird")#gives the name of the game  
-
-#all my game variables
-ground_scroll = 0
-scroll_speed = 5
-
-
-#load images
-bg = pygame.image.load(r"img\bg.png")
-ground_img = pygame.image.load("img\ground.png")
-
-class Bird(pygame.sprite.Sprite):
-    def__init__(self,x,y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(r"img\phoenix.png")
-        self.rect = self.image.get_rect()
-        self.rect.center = [x,y]
-
-bird_group = pygame.sprite.Group()
-
-flappy_phoenix =Bird(100,int(screen_height/2))
-bird_group.add(flappy_phoenix)
-           
-
-
-run = True
-while run:
-
-    clock.tick(fps)
-
-    bird_group.draw(screen) 
-
-    #draw background
-    screen.blit(bg,(0,0))#supposed to paste picture 
-    screen.blit(ground_img, (ground_scroll,768)) #supposed to paste the ground
-    ground_scroll -= scroll_speed
-    if abs(ground_scroll)> 30:   #moves the ground to the left making it seem like its scrolling
-        ground_scroll = 0
-
-    
-    
-    #allows you to move forward,backward,up and down using keys 
-    key = pygame.key.get_pressed()
-    if key [pygame.K_a] == True:
-        player.move_ip(-1,0)
-    elif key[pygame.K_d]== True:
-        player.move_ip(1,0)
-    elif key[pygame.K_w]== True:
-        player.move_ip(0,-1)
-    elif key[pygame.K_s]== True:
-        player.move_ip(0,1)
-    
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
-    pygame.display.update()#updates the game every time I add something new
-
-    
-
-
-
-pygame.quit()    
-
-
-
-
-
-pygame.quit()    
+pygame.quit()     

@@ -1,4 +1,4 @@
-     
+
 import pygame
 from pygame.locals import * 
 #this imports the modules that are needed for the game 
@@ -21,20 +21,26 @@ scroll_speed = 5
 
 
 #load images
-bg = pygame.image.load(r"img\bg.png")
-ground_img = pygame.image.load("img\ground.png")
+bg = pygame.image.load(r"img\mountainimg.jpg") #the background image
+ground = pygame.image.load("img\ground.jpg")#the ground image 
 
 class Bird(pygame.sprite.Sprite):
     def__init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(r"img\phoenix.png")
+        self.images = []
+        self.index = 0
+        self.counter = 0
+        for num in range(1,3):
+           img = pygame.image.load(f"img\flappybird{num}.jpg")
+           self.images.append(img) 
+        self.image = self.images[self.index]
         self.rect = self.image.get_rect()
         self.rect.center = [x,y]
 
 bird_group = pygame.sprite.Group()
 
-flappy_phoenix =Bird(100,int(screen_height/2))
-bird_group.add(flappy_phoenix)
+flappy_bird =Bird(100,int(screen_height/2))
+bird_group.add(flappy_bird)
            
 
 
@@ -76,4 +82,4 @@ while run:
 
 
 
-pygame.quit()     
+pygame.quit() 

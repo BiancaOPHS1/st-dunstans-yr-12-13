@@ -1,5 +1,4 @@
-
-import pygame
+rt pygame
 from pygame.locals import * 
 #this imports the modules that are needed for the game 
 
@@ -18,6 +17,8 @@ pygame.display.set_caption("Flappy Bird")#gives the name of the game
 #all my game variables
 ground_scroll = 0
 scroll_speed = 5
+flying = False
+gamee_over = False
 
 
 #load images
@@ -30,12 +31,49 @@ class Bird(pygame.sprite.Sprite):
         self.images = []
         self.index = 0
         self.counter = 0
-        for num in range(1,3):
+        for num in range(1,3): #pastes all my images of the flappy bird (i have 2) 
            img = pygame.image.load(f"img\flappybird{num}.jpg")
            self.images.append(img) 
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
         self.rect.center = [x,y]
+        self.velocity = 0 #this is the velocity the bird will be travelling at
+        self.clicked = False
+
+    def update(self):
+        #gravity
+        if flying == True:
+            self.velocity += 0.5
+            if self.velocity >8:
+                self.velocity =8
+            if self.rect.bottom < 800:
+                self.rect.y += int(self.vel)
+
+        #jumping motion
+        if pygame.mouse.get_pressed()[0]==1 and self.clicked is False:
+            self.clicked = True
+            self.velocity = -10
+        if pygame.mouse.get_pressed()[0]==0:
+            self.clicked = False
+         
+        
+        #handle the animation, limits or controls the rate at which the animation cycles through
+        self.counter += 1
+        flap_cooldown = 5
+
+        if self.counter > flap_cooldown:
+            self.counter = 0
+            self.index += 1
+            if self.index >= len(self.images):
+                self.index = 0
+        self.image = self.images[self.index]
+
+
+        #rotate the bird
+        self.image = pygame.transform.rotate(self.images[self.index],self.velocity* -2)
+        
+        
+
 
 bird_group = pygame.sprite.Group()
 
@@ -49,32 +87,23 @@ while run:
 
     clock.tick(fps)
 
-    bird_group.draw(screen) 
+    bird_group.draw(screen)#calls function draw
+    bird_group.update() #calls function update
 
     #draw background
     screen.blit(bg,(0,0))#supposed to paste picture 
     screen.blit(ground_img, (ground_scroll,768)) #supposed to paste the ground
     ground_scroll -= scroll_speed
-    if abs(ground_scroll)> 30:   #moves the ground to the left making it seem like its scrolling
+    if abs(ground_scroll)> 35:   #moves the ground to the left making it seem like its scrolling
         ground_scroll = 0
 
-    
-    
-    #allows you to move forward,backward,up and down using keys 
-    key = pygame.key.get_pressed()
-    if key [pygame.K_a] == True:
-        player.move_ip(-1,0)
-    elif key[pygame.K_d]== True:
-        player.move_ip(1,0)
-    elif key[pygame.K_w]== True:
-        player.move_ip(0,-1)
-    elif key[pygame.K_s]== True:
-        player.move_ip(0,1)
     
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.MOUSEBUTTONDOWN and flying == False and game_over == False:
+            flying = True
 
     pygame.display.update()#updates the game every time I add something new
 

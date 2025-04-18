@@ -1,4 +1,4 @@
-rt pygame
+import pygame
 from pygame.locals import * 
 #this imports the modules that are needed for the game 
 
@@ -49,37 +49,58 @@ class Bird(pygame.sprite.Sprite):
             if self.rect.bottom < 800:
                 self.rect.y += int(self.vel)
 
-        #jumping motion
-        if pygame.mouse.get_pressed()[0]==1 and self.clicked is False:
-            self.clicked = True
-            self.velocity = -10
-        if pygame.mouse.get_pressed()[0]==0:
-            self.clicked = False
-         
+        if game_over ==False:
+            #jumping motion
+            if pygame.mouse.get_pressed()[0]==1 and self.clicked is False:
+                self.clicked = True
+                self.velocity = -10
+            if pygame.mouse.get_pressed()[0]==0:
+                self.clicked = False
+
+            #handle the animation, limits or controls the rate at which the animation cycles through
+            self.counter += 1
+            flap_cooldown = 5
+
+            if self.counter > flap_cooldown:
+                self.counter = 0
+                self.index += 1
+                if self.index >= len(self.images):
+                    self.index = 0
+            self.image = self.images[self.index]
+
+
+            #rotate the bird
+            self.image = pygame.transform.rotate(self.images[self.index],self.velocity* -2)
+        else:
+            self.image = pygame.transform.rotate(self.images[self.index],-90)
         
-        #handle the animation, limits or controls the rate at which the animation cycles through
-        self.counter += 1
-        flap_cooldown = 5
-
-        if self.counter > flap_cooldown:
-            self.counter = 0
-            self.index += 1
-            if self.index >= len(self.images):
-                self.index = 0
-        self.image = self.images[self.index]
-
-
-        #rotate the bird
-        self.image = pygame.transform.rotate(self.images[self.index],self.velocity* -2)
+#class for the pipes, or in my case the icicle
+class Icicle(pygame.sprite.Sprite):
+    def__init__(self, x, y, position):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("img\icicle.jpg")
+        self.rect = self.image.get_rect()
+        #positiion 1 is from the top, -1 is from the bottom
+        if position == 1:
+            self.image = pygame.transform.flip(self.image, False, True)
+            self.rect.bottomleft = [x,y]
+        if position == -1:
+            self.rect.topleft = [x,y]
         
         
-
 
 bird_group = pygame.sprite.Group()
+icicle_group = pygame.sprite.Group()
 
-flappy_bird =Bird(100,int(screen_height/2))
+flappy =Bird(100,int(screen_height/2))
 bird_group.add(flappy_bird)
            
+btm_icicle = Icicle(300,int(screen_height/2),-1)#this is the coodrdinates of where the bottom icicle is gonna be 
+top_icicle = Icicle(300,int(screen_height/2),1)#top icicle
+icicle_ground.add(btm_icicle) #prints the bottom icicle
+icicle_ground.add(top_icicle) #prints the top icicle
+
+
 
 
 run = True
@@ -89,13 +110,21 @@ while run:
 
     bird_group.draw(screen)#calls function draw
     bird_group.update() #calls function update
-
-    #draw background
-    screen.blit(bg,(0,0))#supposed to paste picture 
     screen.blit(ground_img, (ground_scroll,768)) #supposed to paste the ground
-    ground_scroll -= scroll_speed
-    if abs(ground_scroll)> 35:   #moves the ground to the left making it seem like its scrolling
-        ground_scroll = 0
+    icicle_group.draw(screen)#
+    icicle_group.update() #calls the icicle class 
+
+    #check if bird has hit the ground
+    if flappy.rect.bottom > 768:
+        game_over = True
+        flying = False
+
+
+    if game_over is False:
+        #draw background
+        ground_scroll -= scroll_speed
+        if abs(ground_scroll)> 35:   #moves the ground to the left making it seem like its scrolling
+            ground_scroll = 0
 
     
     
@@ -111,4 +140,4 @@ while run:
 
 
 
-pygame.quit() 
+pygame.quit()

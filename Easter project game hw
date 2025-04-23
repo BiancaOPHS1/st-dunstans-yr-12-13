@@ -18,21 +18,23 @@ pygame.display.set_caption("Flappy Bird")#gives the name of the game
 ground_scroll = 0
 scroll_speed = 5
 flying = False
-gamee_over = False
+game_over = False
+pipe_gap = 150
+
 
 
 #load images
-bg = pygame.image.load(r"img\mountainimg.jpg") #the background image
-ground = pygame.image.load("img\ground.jpg")#the ground image 
+bg = pygame.image.load(r"sprites\bg.png") #the background image
+ground = pygame.image.load(r"sprites\ground.png")#the ground image
 
 class Bird(pygame.sprite.Sprite):
-    def__init__(self,x,y):
+    def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
         self.images = []
         self.index = 0
         self.counter = 0
-        for num in range(1,3): #pastes all my images of the flappy bird (i have 2) 
-           img = pygame.image.load(f"img\flappybird{num}.jpg")
+        for num in range(1,4): #pastes all my images of the flappy bird (i have 2)
+           img = pygame.image.load(rf"sprites\flappybird{num}.png")
            self.images.append(img) 
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
@@ -75,30 +77,31 @@ class Bird(pygame.sprite.Sprite):
             self.image = pygame.transform.rotate(self.images[self.index],-90)
         
 #class for the pipes, or in my case the icicle
-class Icicle(pygame.sprite.Sprite):
-    def__init__(self, x, y, position):
+class Pipe(pygame.sprite.Sprite):
+    def __init__(self, x, y, position):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("img\icicle.jpg")
+        self.image = pygame.image.load(r"sprites\pipe.png")
         self.rect = self.image.get_rect()
         #positiion 1 is from the top, -1 is from the bottom
         if position == 1:
             self.image = pygame.transform.flip(self.image, False, True)
-            self.rect.bottomleft = [x,y]
+            self.rect.bottomleft = [x,y- int(pipe_gap/2)]
         if position == -1:
-            self.rect.topleft = [x,y]
-        
-        
+            self.rect.topleft = [x,y+int(pipe_gap/2)]
+
+    def update(self):
+        self.rect.x -= scroll_speed
 
 bird_group = pygame.sprite.Group()
-icicle_group = pygame.sprite.Group()
+pipe_group = pygame.sprite.Group()
 
-flappy =Bird(100,int(screen_height/2))
-bird_group.add(flappy_bird)
+flappy = Bird(100,int(SCREEN_HEIGHT/2))
+bird_group.add(flappy)
            
-btm_icicle = Icicle(300,int(screen_height/2),-1)#this is the coodrdinates of where the bottom icicle is gonna be 
-top_icicle = Icicle(300,int(screen_height/2),1)#top icicle
-icicle_ground.add(btm_icicle) #prints the bottom icicle
-icicle_ground.add(top_icicle) #prints the top icicle
+btm_pipe = Pipe(300,int(SCREEN_HEIGHT/2),-1)#this is the coordinates of where the bottom pipe is going to be
+top_pipe = Pipe(300,int(SCREEN_HEIGHT/2),1) # this is where the top pipe is going to be
+pipe_group.add(btm_pipe) #prints the bottom icicle
+pipe_group.add(top_pipe) #prints the top icicle
 
 
 
@@ -110,9 +113,9 @@ while run:
 
     bird_group.draw(screen)#calls function draw
     bird_group.update() #calls function update
-    screen.blit(ground_img, (ground_scroll,768)) #supposed to paste the ground
-    icicle_group.draw(screen)#
-    icicle_group.update() #calls the icicle class 
+    screen.blit(pygame.image.load(r'sprites\ground.png'), (ground_scroll,768)) #supposed to paste the ground
+    pipe_group.draw(screen)#
+    pipe_group.update() #calls the icicle class
 
     #check if bird has hit the ground
     if flappy.rect.bottom > 768:

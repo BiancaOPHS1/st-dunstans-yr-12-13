@@ -1,6 +1,7 @@
 import pygame
 from time import sleep
-from pygame.locals import * 
+from pygame.locals import *
+import random
 #this imports the modules that are needed for the game 
 
 pygame.init() #pygame is initialised 
@@ -21,6 +22,8 @@ scroll_speed = 5
 flying = False
 game_over = False
 pipe_gap = 150
+pipe_frequency = 1500 #miliseconds
+last_pipe = pygame.time.get_ticks()
 
 
 
@@ -92,17 +95,14 @@ class Pipe(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x -= scroll_speed
+        if self.rect.right <0:
+            self.kill()
 
 bird_group = pygame.sprite.Group()
 pipe_group = pygame.sprite.Group()
 
 flappy = Bird(100,int(SCREEN_HEIGHT/2))
 bird_group.add(flappy)
-           
-btm_pipe = Pipe(300,int(SCREEN_HEIGHT/2),-1)#this is the coordinates of where the bottom pipe is going to be
-top_pipe = Pipe(300,int(SCREEN_HEIGHT/2),1) # this is where the top pipe is going to be
-pipe_group.add(btm_pipe) #prints the bottom icicle
-pipe_group.add(top_pipe) #prints the top icicle
 
 bg = pygame.image.load(r'sprites\bg.png')
 ground_img = pygame.image.load(r'sprites\ground.png')
@@ -119,25 +119,40 @@ while run:
     bird_group.update() #calls function update
     screen.blit(pygame.image.load(r'sprites\ground.png'), (ground_scroll,768)) #supposed to paste the ground
     pipe_group.draw(screen)#
-    pipe_group.update() #calls the icicle class
+
+
+    #collision with the pipes
+    if pygame.sprite.groupcollide(bird_group, pipe_group,False, False) or flappy.rect.top < 0:
+        game_over = True
 
     #check if bird has hit the ground
-    if flappy.rect.bottom > 768:
+    if flappy.rect.bottom >= 768:
         game_over = True
         flying = False
 
 
 
     if game_over is False:
+        #generate new pipes
+        time_now = pygame.time.get_ticks()
+        if time_now - last_pipe > pipe_frequency:
+            pipe_height = random.randint(-100, 100)
+            btm_pipe = Pipe(SCREEN_WIDTH, int(SCREEN_HEIGHT / 2) + pipe_height,-1)  # this is the coordinates of where the bottom pipe is going to be
+            top_pipe = Pipe(SCREEN_WIDTH, int(SCREEN_HEIGHT / 2) + pipe_height, 1)  # this is where the top pipe is going to be
+            pipe_group.add(btm_pipe)  # prints the bottom icicle
+            pipe_group.add(top_pipe)  # prints the top icicle
+            last_pipe = time_now
         #draw background
         ground_scroll -= scroll_speed
         if abs(ground_scroll)> 35:   #moves the ground to the left making it seem like its scrolling
             ground_scroll = 0
+
+        pipe_group.update()
     else:
         # Game over sequence
 
 
-        sleep(3)
+        sleep(1)
         run = False
 
     

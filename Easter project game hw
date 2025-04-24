@@ -1,4 +1,5 @@
 import pygame
+from time import sleep
 from pygame.locals import * 
 #this imports the modules that are needed for the game 
 
@@ -49,7 +50,7 @@ class Bird(pygame.sprite.Sprite):
             if self.velocity >8:
                 self.velocity =8
             if self.rect.bottom < 800:
-                self.rect.y += int(self.vel)
+                self.rect.y += int(self.velocity)
 
         if game_over ==False:
             #jumping motion
@@ -103,13 +104,16 @@ top_pipe = Pipe(300,int(SCREEN_HEIGHT/2),1) # this is where the top pipe is goin
 pipe_group.add(btm_pipe) #prints the bottom icicle
 pipe_group.add(top_pipe) #prints the top icicle
 
-
+bg = pygame.image.load(r'sprites\bg.png')
+ground_img = pygame.image.load(r'sprites\ground.png')
 
 
 run = True
 while run:
 
     clock.tick(fps)
+
+    screen.blit(bg, (0, 0))
 
     bird_group.draw(screen)#calls function draw
     bird_group.update() #calls function update
@@ -123,11 +127,18 @@ while run:
         flying = False
 
 
+
     if game_over is False:
         #draw background
         ground_scroll -= scroll_speed
         if abs(ground_scroll)> 35:   #moves the ground to the left making it seem like its scrolling
             ground_scroll = 0
+    else:
+        # Game over sequence
+
+
+        sleep(3)
+        run = False
 
     
     
@@ -144,3 +155,7 @@ while run:
 
 
 pygame.quit()
+
+
+
+

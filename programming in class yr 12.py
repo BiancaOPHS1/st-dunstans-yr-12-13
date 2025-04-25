@@ -1,0 +1,219 @@
+#iterative binary search 
+#program returns true and index of array if present
+#otherwise returns false
+
+
+
+#subprogram 
+def binarySearch(array,search):
+  low = array[0] #the 
+  high = len(array) - 1 
+  while low <= high: # if low is higher the high then value is not on the list 
+    mid = (high + low)//2 #finds the middle value of the list 
+    if array[mid]< search: #looks for value after it has compared in the upper half 
+      low = mid + 1 
+    elif array[mid]> search: # looks for value in lower half 
+      high = mid - 1
+      return mid, "true" # return the number found and true
+    else:
+      return "false"
+
+
+
+
+#main program 
+ search = int(input("enter the integar you are looking for"))
+ 
+#----------------------------------------------------------------------------
+
+#calculate litres of paint 
+#subprogram 
+
+
+
+
+
+
+
+
+
+
+#main program 
+length = float(" enter the length of the wall")
+width = float("enter the width of the wall")
+noOfWall = int("enter the number of walls needed to paint")
+noOfCoats = int("enter the number of coats of paint needed")
+
+#---------------------------------------------------------------------------
+
+import threading 
+import time
+
+def func():
+  print('ran')
+  time.sleep(0.1)
+  print("done")
+  time.sleep(0.85)
+  print("now done")
+  
+  
+
+x = threading.Thread(target=func)
+x.start()
+print(threading.activeCount())
+time.sleep(1)
+print("finally")
+
+
+#---------------------------------------------------------------------------
+
+import threading 
+import time
+
+def count(n):
+  for i in range(1, n+1):
+    print(i)
+    time.sleep(0.01)
+    
+
+for _ in range(2):
+  x = threading.Thread(target=count, args=(10,))
+  x.start()
+  
+print("done")
+
+#------------------------------------------------------------------
+
+
+def reverse_string(s):
+  if len(s)<= 1:
+    return s
+  else:
+    return s[-1]+ reverse_string(s[:-1])
+    
+    
+print ("reversed string is:", reverse_string("racecar"))
+
+#-----------------------------------------------------------------
+
+def fib(n):
+  
+   while n<=30 and n>= 3:
+    return fib(n-1) + fib(n-2)
+   else:
+     return n
+    
+
+print(fib(3))
+
+#------------------------------------------------------------
+
+
+num1 = int(input("enter a number between 0 and 30"))
+#ask user to enter a random number from 0 to 30 
+
+total = 0
+
+if num1 == randomInt: 
+  if num1 % 2 == 0:
+    total = num1 * 2
+  elif num1 % 10 == 0: 
+    total = num1 * 3
+  elif num1<5:
+    total= num1 * 2
+
+print(f"result: {randomInt}")
+if (num1 == randomInt):
+  print("you win")
+else:
+  print("you loose")
+
+#----------------------------------------------------
+
+class Animal():
+  name = ""
+  species = ""
+  diet = ""
+  enclosure = ""
+  def _init_(self,name, species,diet,enclosure):
+    self.name = name 
+    self.species = species
+    self.diet = diet
+    self.enclosure = enclosure
+  def name(self):
+
+#-------------------------------------------------
+
+
+word = input("input a word")
+word1 = word[1:]
+word2 = word[0:1]
+print(word1+word2+ "ay")
+
+#--------------------------------------------
+
+word = input("enter a word")
+word1 = word[0:4]
+print(word1)
+
+#----------------------------------------------
+
+height = float(input("enter the height"))
+width = float(input("enter width"))
+depth = float(input("enter the depth"))
+coats_of_paint = int(input("enter the the number of coats of paint"))
+doorArea = float(input("enter the total area taken up by the doors"))
+
+total= (height* width* depth* coats_of_paint)- doorArea
+amountOfPaint = total/11
+print(round(amountOfPaint, 2))
+
+
+#----------------------------------------------
+
+
+tempConverter = input("do you want to to convert to celcius or fahrenheit")
+number = int(input("enter the number you want to convert"))
+
+def convertTofahrenheit():
+  fheit = (number*1.8) +32
+  print(round(fheit,1))
+  
+  
+def convertToCelcius():
+  celcius = (number-32)/1.8
+  print(round(celcius,1))
+  
+if tempConverter == "celcius":
+  convertToCelcius()
+else:
+  convertTofahrenheit()
+
+#---------------------------------------------
+
+
+class itemforsale:
+  def __init__(self,pitemname,pprice):
+    self.itemname = pitemname
+    self.price = pprice
+    self.discount =0 
+
+#----------------------------------------------
+
+#=================================
+def timeValue():
+    hundreds = time[0:2]
+    notHundreds = time[3:5]
+    print(hundreds+notHundreds)
+ 
+
+#main program ======================
+time =input("enter a time\n")
+timeValue()
+
+#----------------------------------------------
+    
+mushypeas = itemforsale("mushypeas",0.89)
+print(mushypeas.price)
+print(mushypeas.itemname)
+

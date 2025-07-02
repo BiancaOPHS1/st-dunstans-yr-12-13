@@ -1,0 +1,28 @@
+var email = prompt("what is your email")
+var email2 = prompt("enter email again")
+if (email == email2){
+    console.log("match")
+    console.log(email)
+}
+else{
+    console.log("do not match")
+    
+}
+
+--------------------------------------------------------------------------------------
+
+var totalBill = parseInt(prompt("enter total bill"))
+var pay = parseInt(prompt("enter the amount you paid"))
+totalBill = totalBill - pay
+while(totalBill > 0){
+    console.log(totalBill)
+    var pay = parseInt(prompt("enter the amount you paid"))
+    totalBill = totalBill - pay
+}
+if (totalBill ==0 ){
+    console.log("bill paid")
+}
+if (totalBill <0){
+    console.log(-totalBill)
+}
+

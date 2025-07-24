@@ -1,0 +1,41 @@
+#task 2: implement in-order traversal
+
+class Node:
+    def __init__(self,value):
+        self.left= None #holds the data of the node to its left 
+        self.data= value #holds the data of the node
+        self.right= None #holds the data of the node to its right
+
+
+class Tree:
+    def createNode(self,data):
+        return Node(data) #create a node type 
+
+    def insert(self,node,data):
+        if node is None: #checks if initial node has a value or not 
+            return self.createNode(data)
+        if data < node.data:  #if the data entered is smaller then the root node data 
+            node.left = self.insert(node.left,data) #data entered to the left node since smaller
+        else: 
+            node.right = self.insert(node.right,data) #otherwise data is entered to the right side
+        return node
+
+    def traverse_Inorder(self,root):
+        if root is not None:
+            self.traverse_Inorder(root.left)
+            print(root.data)
+            self.traverse_Inorder(root.right) 
+
+
+#main code
+tree = Tree()
+root = tree.createNode(5)
+print(root.data)
+tree.insert(root,2)
+tree.insert(root,1)
+tree.insert(root,7)
+tree.insert(root,12)
+tree.insert(root,1.5)
+tree.insert(root,19)
+print("Inorder ---->")
+tree.traverse_Inorder(root) 

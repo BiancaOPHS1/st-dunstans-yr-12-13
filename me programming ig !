@@ -86,3 +86,32 @@ def orderList():
 #------------------main program-------------------------
 addToArray()
 orderList()
+
+
+
+#---------------------------------------------------------
+
+
+
+#factorial finder
+#finds the factorial of any number
+
+#subprogram
+
+
+def factorialFinder(number):
+    if number <0:
+        number = int(input("the number must be greater then 0. Please enter a number"))
+    if number ==1 or number == 0:
+        return 1
+    else:
+        return number* factorialFinder(number-1) 
+         
+
+
+#main program
+
+number = int(input("enter a whole positive number"))
+print(factorialFinder(number))
+
+#--------------------------------------------------------

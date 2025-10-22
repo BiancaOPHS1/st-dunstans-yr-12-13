@@ -115,3 +115,24 @@ number = int(input("enter a whole positive number"))
 print(factorialFinder(number))
 
 #--------------------------------------------------------
+
+#bubble sort
+#subprogram
+
+array = [4,8,3,5,90,123,6] #an array that needs to be sorted
+
+
+def bubblesort(array):
+    for j in range(0,len(array)-1):
+        for i in range(0,len(array)-1):
+            while array[i]> array[i+1]:
+                temp = array[i+1]
+                array[i+1]=array[i]
+                array[i]= temp
+    return(array) 
+
+
+#MAIN PROGRAm
+print(bubblesort(array))
+
+#--------------------------------------------------------

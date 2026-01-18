@@ -7,18 +7,87 @@ window.title("Sign-up or Log-in") #this gives the window a name called signup or
 
 
 #creating the sign up and log in buttons
-signUpbutton = tkinter.Button(window, text = "Sign-up") #creates a button called sign in
+signUpbutton = tkinter.Button(window, text = "Sign-up", command= signUpForm) #creates a button called sign in
 signUpbutton.config(font = ("ariel",50)) #the sign in button will have the ariel font and size 50
 signUpbutton.config(bg = "lightblue") #the background colour of the sign in button will be light blue
 signUpbutton.config(fg = "black") #the text colour of the sign in button will be black
 signUpbutton.place(x=300, y=350) #places the sign up button at coordinates (100,100) in the window
 
-logInbutton = tkinter.Button(window, text = "Log-in") #creates a button called log in
+def signUpForm():
+    signUpbutton.pack_forget()
+    logInbutton.pack_forget()
+
+    #creating the sign up form
+    signUpLabel = tkinter.Label(window, text = "Sign-up Form") #creates a label for the sign up form
+    signUpLabel.config(font = ("ariel",30)) #the sign up label will have the ariel font and size 30
+    signUpLabel.pack() #packs the sign up label into the window
+    
+    firstName = tkinter.Label(window, text="First name:") #creating the firstname entry
+    firstName.config(font = ("ariel",20))
+    firstName.pack()
+    firstNameEntry = tkinter.Entry(window)
+    firstNameEntry.place(x=200, y=150)
+
+    lastName = tkinter.Label(window, text="Last name:") #creating the lastname entry
+    lastName.config(font = ("ariel",20))
+    lastName.pack()
+    lastNameEntry = tkinter.Entry(window)
+    lastNameEntry.place(x=200, y=200)
+
+    email = tkinter.Label(window, text="Email:") #creating the email entry
+    email.config(font = ("ariel",20))
+    email.pack()
+    emailEntry = tkinter.Entry(window)
+    emailEntry.place(x=200, y=250)
+
+    username = tkinter.Label(window, text="Username:") #creating the username entry
+    username.config(font = ("ariel",20))
+    username.pack()
+    usernameEntry = tkinter.Entry(window)
+    usernameEntry.place(x=200, y=300)
+
+    password = tkinter.Label(window, text="Password:") #creating the password entry
+    password.config(font = ("ariel",20))    
+    password.pack()
+    passwordEntry = tkinter.Entry(window, show="*")
+    passwordEntry.place(x=200, y=350)
+
+    submitButton = tkinter.Button(window, text="Submit") #creating the submit button
+    submitButton.config(font = ("ariel",20))
+    submitButton.pack()
+
+    
+    
+logInbutton = tkinter.Button(window, text = "Log-in", command = logInForm) #creates a button called log in
 logInbutton.config(font = ("ariel",50)) #the log in button will have the ariel font and size 50
 logInbutton.config(bg = "lightgreen") #the background colour of the log in button will be light green
 logInbutton.config(fg = "black") #the text colour of the log in button will be black
 logInbutton.place(x=800, y=350) #places the log in button at coordinates (400,100) in the window
 
+def logInForm():
+    signUpbutton.pack_forget()
+    logInbutton.pack_forget()
+
+    #creating the log in form
+    logInLabel = tkinter.Label(window, text = "Log-in Form") #creates a label for the log in form
+    logInLabel.config(font = ("ariel",30)) #the log in label will have the ariel font and size 30
+    logInLabel.pack() #packs the log in label into the window
+    
+    username = tkinter.Label(window, text="Username:") #creating the username entry
+    username.config(font = ("ariel",20))
+    username.pack()
+    usernameEntry = tkinter.Entry(window)
+    usernameEntry.place(x=200, y=200)
+
+    password = tkinter.Label(window, text="Password:") #creating the password entry
+    password.config(font = ("ariel",20))    
+    password.pack()
+    passwordEntry = tkinter.Entry(window, show="*")
+    passwordEntry.place(x=200, y=250)
+
+    submitButton = tkinter.Button(window, text="Submit") #creating the submit button
+    submitButton.config(font = ("ariel",20))
+    submitButton.pack()
 
 
 window.mainloop() #the application window will continue running until x is pressed and the main loop will stop being exectuted

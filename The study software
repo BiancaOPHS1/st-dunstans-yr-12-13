@@ -5,14 +5,6 @@ import tkinter
 window = tkinter.Tk() #this opens up the window
 window.title("Sign-up or Log-in") #this gives the window a name called signup or login
 
-
-#creating the sign up and log in buttons
-signUpbutton = tkinter.Button(window, text = "Sign-up", command= signUpForm) #creates a button called sign in
-signUpbutton.config(font = ("ariel",50)) #the sign in button will have the ariel font and size 50
-signUpbutton.config(bg = "lightblue") #the background colour of the sign in button will be light blue
-signUpbutton.config(fg = "black") #the text colour of the sign in button will be black
-signUpbutton.place(x=300, y=350) #places the sign up button at coordinates (100,100) in the window
-
 def signUpForm():
     signUpbutton.pack_forget()
     logInbutton.pack_forget()
@@ -56,13 +48,6 @@ def signUpForm():
     submitButton.config(font = ("ariel",20))
     submitButton.pack()
 
-    
-    
-logInbutton = tkinter.Button(window, text = "Log-in", command = logInForm) #creates a button called log in
-logInbutton.config(font = ("ariel",50)) #the log in button will have the ariel font and size 50
-logInbutton.config(bg = "lightgreen") #the background colour of the log in button will be light green
-logInbutton.config(fg = "black") #the text colour of the log in button will be black
-logInbutton.place(x=800, y=350) #places the log in button at coordinates (400,100) in the window
 
 def logInForm():
     signUpbutton.pack_forget()
@@ -88,6 +73,22 @@ def logInForm():
     submitButton = tkinter.Button(window, text="Submit") #creating the submit button
     submitButton.config(font = ("ariel",20))
     submitButton.pack()
+
+
+#creating the sign up and log in buttons
+signUpbutton = tkinter.Button(window, text = "Sign-up", command= signUpForm) #creates a button called sign in
+signUpbutton.config(font = ("ariel",50)) #the sign in button will have the ariel font and size 50
+signUpbutton.config(bg = "lightblue") #the background colour of the sign in button will be light blue
+signUpbutton.config(fg = "black") #the text colour of the sign in button will be black
+signUpbutton.place(x=300, y=350) #places the sign up button at coordinates (100,100) in the window
+
+   
+logInbutton = tkinter.Button(window, text = "Log-in", command = logInForm) #creates a button called log in
+logInbutton.config(font = ("ariel",50)) #the log in button will have the ariel font and size 50
+logInbutton.config(bg = "lightgreen") #the background colour of the log in button will be light green
+logInbutton.config(fg = "black") #the text colour of the log in button will be black
+logInbutton.place(x=800, y=350) #places the log in button at coordinates (400,100) in the window
+
 
 
 window.mainloop() #the application window will continue running until x is pressed and the main loop will stop being exectuted

@@ -1,5 +1,6 @@
 import pygame
 import tkinter
+import sqlite3
 
 #creating a window
 window = tkinter.Tk() #this opens up the window
@@ -8,10 +9,35 @@ window.title("Sign-up or Log-in") #this gives the window a name called signup or
 def signUpForm():
     signUpbutton.pack_forget()
     logInbutton.pack_forget()
-
     frame= tkinter.Frame(window) #creates a frame inside the window
     frame.pack()
-    #saving user data 
+
+    def submit():
+        firstNameValue = firstNameEntry.get()
+        lastNameValue = lastNameEntry.get()
+        usernameValue = usernameEntry.get()
+        passwordValue = passwordEntry.get()
+        emailValue = emailEntry.get()
+        print("First Name:", firstNameValue)
+        print("Last Name:", lastNameValue)
+        print("Username:", usernameValue)
+        print("Password:", passwordValue)
+        print("Email:", emailValue)
+
+        #creating or connecting to a database
+        conn = sqlite3.connect('user_data.db')
+        userTable_query = '''CREATE TABLE IF NOT EXISTS users (first_name TEXT, last_name TEXT, username TEXT, password TEXT, email TEXT) 
+        '''
+        conn.execute(userTable_query)
+        #inserting data into the database
+        userTable_query = '''INSERT INTO users (first_name, last_name, username, password, email) VALUES (?, ?, ?, ?, ?)'''
+        userTable_tuple = (firstNameValue, lastNameValue, usernameValue, passwordValue, emailValue)
+        cursor = conn.cursor()
+        cursor.execute(userTable_query, userTable_tuple)
+        conn.commit()
+        conn.close()
+
+
     signUpFrame = tkinter.LabelFrame(frame, text="Personal information") #creates a labelled frame inside the frame
     signUpFrame.grid(row= 0, column=0, padx=20, pady=20) #places the labelled frame at row 0 column 0 of the frame
     signUpFrame2 = tkinter.LabelFrame(frame, text="Account details") #creates a labelled frame inside the frame
@@ -30,7 +56,7 @@ def signUpForm():
     lastName.grid(row=0, column=1)
     lastNameEntry = tkinter.Entry(signUpFrame)
     lastNameEntry.grid(row=1, column=1)
-    
+
     username = tkinter.Label(signUpFrame2, text="Username:") #creating the username entry
     username.config(font = ("ariel",15))
     username.grid(row=0, column=0)
@@ -44,14 +70,17 @@ def signUpForm():
     passwordEntry.grid(row=1, column=1)
 
     email = tkinter.Label(signUpFrame3, text="Email:") #creating the email entry
+    signUpFrame.grid_columnconfigure(0, weight=1)
     email.config(font = ("ariel",15))
-    email.grid(row=0, column=0)
+    email.grid(row=0, column=0, columnspan=1, sticky="nsew")
     emailEntry = tkinter.Entry(signUpFrame3)
-    emailEntry.grid(row=1, column=0)
+    emailEntry.grid(row=1, column=0, columnspan=1,sticky="nsew")
 
-    submitButton = tkinter.Button(frame, text="Submit") #creating the submit button
+    submitButton = tkinter.Button(frame, text="Submit", command= submit) #creating the submit button
     submitButton.config(font = ("ariel",15))
     submitButton.grid(row=3 , column=0, sticky="news", padx=20, pady=20)
+
+
 
 
 def logInForm():
@@ -86,15 +115,15 @@ signUpbutton = tkinter.Button(window, text = "Sign-up", command= signUpForm) #cr
 signUpbutton.config(font = ("ariel",50)) #the sign in button will have the ariel font and size 50
 signUpbutton.config(bg = "lightblue") #the background colour of the sign in button will be light blue
 signUpbutton.config(fg = "black") #the text colour of the sign in button will be black
-signUpbutton.place(x=300, y=350) #places the sign up button at coordinates (100,100) in the window
-
+#signUpbutton.place(x=300, y=350) #places the sign up button at coordinates (100,100) in the window
+signUpbutton.pack(side="left", expand=True )
    
 logInbutton = tkinter.Button(window, text = "Log-in", command = logInForm) #creates a button called log in
 logInbutton.config(font = ("ariel",50)) #the log in button will have the ariel font and size 50
 logInbutton.config(bg = "lightgreen") #the background colour of the log in button will be light green
 logInbutton.config(fg = "black") #the text colour of the log in button will be black
-logInbutton.place(x=800, y=350) #places the log in button at coordinates (400,100) in the window
-
+#logInbutton.place(x=800, y=350) #places the log in button at coordinates (400,100) in the window
+logInbutton.pack(side="right", expand=True)   
 
 
 window.mainloop() #the application window will continue running until x is pressed and the main loop will stop being exectuted

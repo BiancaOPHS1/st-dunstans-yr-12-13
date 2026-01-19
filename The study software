@@ -9,70 +9,76 @@ def signUpForm():
     signUpbutton.pack_forget()
     logInbutton.pack_forget()
 
-    #creating the sign up form
-    signUpLabel = tkinter.Label(window, text = "Sign-up Form") #creates a label for the sign up form
-    signUpLabel.config(font = ("ariel",30)) #the sign up label will have the ariel font and size 30
-    signUpLabel.pack() #packs the sign up label into the window
+    frame= tkinter.Frame(window) #creates a frame inside the window
+    frame.pack()
+    #saving user data 
+    signUpFrame = tkinter.LabelFrame(frame, text="Personal information") #creates a labelled frame inside the frame
+    signUpFrame.grid(row= 0, column=0, padx=20, pady=20) #places the labelled frame at row 0 column 0 of the frame
+    signUpFrame2 = tkinter.LabelFrame(frame, text="Account details") #creates a labelled frame inside the frame
+    signUpFrame2.grid(row=1, column=0,sticky = "news", padx=20, pady=20) #places the labelled frame at row 1 column 0 of the frame
+    signUpFrame3 = tkinter.LabelFrame(frame, text="Email") #creates a labelled frame inside the frame
+    signUpFrame3.grid(row=2, column=0,sticky = "news", padx=20, pady=20) #places the labelled frame at row 2 column 0 of the frame
+
+    firstName = tkinter.Label(signUpFrame, text="First name:") #creating the firstname entry
+    firstName.config(font = ("ariel",15))
+    firstName.grid(row=0, column=0)
+    firstNameEntry = tkinter.Entry(signUpFrame)
+    firstNameEntry.grid(row=1, column=0)
+
+    lastName = tkinter.Label(signUpFrame, text="Last name:") #creating the lastname entry
+    lastName.config(font = ("ariel",15))
+    lastName.grid(row=0, column=1)
+    lastNameEntry = tkinter.Entry(signUpFrame)
+    lastNameEntry.grid(row=1, column=1)
     
-    firstName = tkinter.Label(window, text="First name:") #creating the firstname entry
-    firstName.config(font = ("ariel",20))
-    firstName.pack()
-    firstNameEntry = tkinter.Entry(window)
-    firstNameEntry.place(x=200, y=150)
+    username = tkinter.Label(signUpFrame2, text="Username:") #creating the username entry
+    username.config(font = ("ariel",15))
+    username.grid(row=0, column=0)
+    usernameEntry = tkinter.Entry(signUpFrame2)
+    usernameEntry.grid(row=1, column=0)
 
-    lastName = tkinter.Label(window, text="Last name:") #creating the lastname entry
-    lastName.config(font = ("ariel",20))
-    lastName.pack()
-    lastNameEntry = tkinter.Entry(window)
-    lastNameEntry.place(x=200, y=200)
+    password = tkinter.Label(signUpFrame2, text="Password:") #creating the password entry
+    password.config(font = ("ariel",15))
+    password.grid(row=0, column=1)
+    passwordEntry = tkinter.Entry(signUpFrame2, show="*")
+    passwordEntry.grid(row=1, column=1)
 
-    email = tkinter.Label(window, text="Email:") #creating the email entry
-    email.config(font = ("ariel",20))
-    email.pack()
-    emailEntry = tkinter.Entry(window)
-    emailEntry.place(x=200, y=250)
+    email = tkinter.Label(signUpFrame3, text="Email:") #creating the email entry
+    email.config(font = ("ariel",15))
+    email.grid(row=0, column=0)
+    emailEntry = tkinter.Entry(signUpFrame3)
+    emailEntry.grid(row=1, column=0)
 
-    username = tkinter.Label(window, text="Username:") #creating the username entry
-    username.config(font = ("ariel",20))
-    username.pack()
-    usernameEntry = tkinter.Entry(window)
-    usernameEntry.place(x=200, y=300)
-
-    password = tkinter.Label(window, text="Password:") #creating the password entry
-    password.config(font = ("ariel",20))    
-    password.pack()
-    passwordEntry = tkinter.Entry(window, show="*")
-    passwordEntry.place(x=200, y=350)
-
-    submitButton = tkinter.Button(window, text="Submit") #creating the submit button
-    submitButton.config(font = ("ariel",20))
-    submitButton.pack()
+    submitButton = tkinter.Button(frame, text="Submit") #creating the submit button
+    submitButton.config(font = ("ariel",15))
+    submitButton.grid(row=3 , column=0, sticky="news", padx=20, pady=20)
 
 
 def logInForm():
     signUpbutton.pack_forget()
     logInbutton.pack_forget()
 
-    #creating the log in form
-    logInLabel = tkinter.Label(window, text = "Log-in Form") #creates a label for the log in form
-    logInLabel.config(font = ("ariel",30)) #the log in label will have the ariel font and size 30
-    logInLabel.pack() #packs the log in label into the window
+    frame= tkinter.Frame(window) #creates a frame inside the window
+    frame.pack()
+
+    logInFrame = tkinter.LabelFrame(frame, text="Log-in details") #creates a labelled frame inside the frame
+    logInFrame.grid(row= 0, column=0, padx=20, pady=20) #places the labelled frame at row 0 column 0 of the frame
     
-    username = tkinter.Label(window, text="Username:") #creating the username entry
-    username.config(font = ("ariel",20))
-    username.pack()
-    usernameEntry = tkinter.Entry(window)
-    usernameEntry.place(x=200, y=200)
+    username = tkinter.Label(logInFrame, text="Username:") #creating the username entry
+    username.config(font = ("ariel",15))
+    username.grid(row=0, column=0)
+    usernameEntry = tkinter.Entry(logInFrame)
+    usernameEntry.grid(row=0, column=1)
 
-    password = tkinter.Label(window, text="Password:") #creating the password entry
-    password.config(font = ("ariel",20))    
-    password.pack()
-    passwordEntry = tkinter.Entry(window, show="*")
-    passwordEntry.place(x=200, y=250)
+    password = tkinter.Label(logInFrame, text="Password:") #creating the password entry
+    password.config(font = ("ariel",15))    
+    password.grid(row=1, column=0)
+    passwordEntry = tkinter.Entry(logInFrame, show="*")
+    passwordEntry.grid(row=1, column=1)
 
-    submitButton = tkinter.Button(window, text="Submit") #creating the submit button
-    submitButton.config(font = ("ariel",20))
-    submitButton.pack()
+    submitButton = tkinter.Button(frame, text="Submit") #creating the submit button
+    submitButton.config(font = ("ariel",15))
+    submitButton.grid(row=2, column=0, sticky="news", padx=20, pady=20)
 
 
 #creating the sign up and log in buttons

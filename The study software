@@ -126,8 +126,19 @@ def signUpForm():
 
 
 def logInForm():
+
     signUpbutton.pack_forget()
     logInbutton.pack_forget()
+
+    def submit():
+        global usernameValue
+        global passwordValue
+        usernameValue = usernameEntry.get() #getting the value entered in the username entry
+        passwordValue = passwordEntry.get() #getting the value entered in the password entry
+        print("Username:", usernameValue)
+        print("Password:", passwordValue)
+        verifyLogIn()
+        window.destroy() #closes the window after submission
 
     frame= tkinter.Frame(window) #creates a frame inside the window
     frame.pack()
@@ -147,10 +158,21 @@ def logInForm():
     passwordEntry = tkinter.Entry(logInFrame, show="*")
     passwordEntry.grid(row=1, column=1)
 
-    submitButton = tkinter.Button(frame, text="Submit") #creating the submit button
+    submitButton = tkinter.Button(frame, text="Submit", command=submit) #creating the submit button
     submitButton.config(font = ("ariel",15))
     submitButton.grid(row=2, column=0, sticky="news", padx=20, pady=20)
 
+
+
+def verifyLogIn():
+    conn = sqlite3.connect('user_data.db') 
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM users WHERE username=?", (usernameValue,)) #checking if the username exists in the database
+    if cursor.fetchone() is None:
+        signUpForm()
+    conn.close()
+
+    
 
 #creating the sign up and log in buttons
 signUpbutton = tkinter.Button(window, text = "Sign-up", command= signUpForm) #creates a button called sign in
@@ -166,9 +188,11 @@ logInbutton.config(fg = "black") #the text colour of the log in button will be b
 logInbutton.pack(side="right", expand=True)   
 
 
+
 window.mainloop() #the application window will continue running until x is pressed and the main loop will stop being exectuted#
 
-#new revision software window
+
+
 
 
 

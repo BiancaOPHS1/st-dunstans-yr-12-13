@@ -1,6 +1,7 @@
 import pygame
 import tkinter
 import sqlite3
+import tkinter.messagebox
 
 #creating a window
 window = tkinter.Tk() #this opens up the window
@@ -14,10 +15,39 @@ def signUpForm():
 
     def submit():
         firstNameValue = firstNameEntry.get()
+        if len(firstNameValue)<1 or len(firstNameValue)>20:
+            tkinter.messagebox.showerror(title= "Invalid First Name", message="First name must be between 1 and 20 characters.")
+            return 
         lastNameValue = lastNameEntry.get()
+        if len(lastNameValue)<1 or len(lastNameValue)>40:
+            tkinter.messagebox.showerror(title= "Invalid Last Name", message="Last name must be between 1 and 40 characters.")
+            return
         usernameValue = usernameEntry.get()
+        if len(usernameValue)<1 or len(usernameValue)>20:
+            tkinter.messagebox.showerror(title= "Invalid Username", message="Username must be between 1 and 20 characters.")
+            return
         passwordValue = passwordEntry.get()
+        if len(passwordValue)>=8:
+            tkinter.messagebox.showerror(title= "Invalid Password", message="Password must be 8 characters or more.")
+            return
+        hasSpecialChar = False
+        for i in range (0, len(passwordValue)):
+            if passwordValue[i] == "!" or passwordValue[i] == "#" or passwordValue[i] == "$" or passwordValue[i] == "%" or passwordValue[i] == "&" or passwordValue[i] == "*":
+                hasSpecialChar = True
+        if not hasSpecialChar:
+            tkinter.messagebox.showerror(title= "Invalid Password", message="Password must contain at least one special character")
+            return
+        hasNumber = False
+        for i in range (0, len(passwordValue)):
+            if passwordValue[i] == "0" or passwordValue[i] == "1" or passwordValue[i] == "2" or passwordValue[i] == "3" or passwordValue[i] == "4" or passwordValue[i] == "5" or passwordValue[i] == "6" or passwordValue[i] == "7" or passwordValue[i] == "8" or passwordValue[i] == "9":
+                hasNumber = True
+        if not hasNumber:
+            tkinter.messagebox.showerror(title= "Invalid Password", message="Password must contain at least one number")
+            return
         emailValue = emailEntry.get()
+        if "@" not in emailValue or "." not in emailValue:
+            tkinter.messagebox.showerror(title= "Invalid Email", message="Email must contain @ and . ")
+            return
         print("First Name:", firstNameValue)
         print("Last Name:", lastNameValue)
         print("Username:", usernameValue)
@@ -26,12 +56,12 @@ def signUpForm():
 
         #creating or connecting to a database
         conn = sqlite3.connect('user_data.db')
-        userTable_query = '''CREATE TABLE IF NOT EXISTS users (first_name TEXT, last_name TEXT, username TEXT, password TEXT, email TEXT) 
+        userTable_query = '''CREATE TABLE IF NOT EXISTS users (userID INTEGER PRIMARY KEY,first_name TEXT, last_name TEXT, username TEXT, password TEXT, email TEXT) 
         '''
         conn.execute(userTable_query)
         #inserting data into the database
-        userTable_query = '''INSERT INTO users (first_name, last_name, username, password, email) VALUES (?, ?, ?, ?, ?)'''
-        userTable_tuple = (firstNameValue, lastNameValue, usernameValue, passwordValue, emailValue)
+        userTable_query = '''INSERT INTO users (userID,first_name, last_name, username, password, email) VALUES (?, ?, ?, ?, ?, ?)'''
+        userTable_tuple = (None, firstNameValue, lastNameValue, usernameValue, passwordValue, emailValue)
         cursor = conn.cursor()
         cursor.execute(userTable_query, userTable_tuple)
         conn.commit()
@@ -81,8 +111,6 @@ def signUpForm():
     submitButton.grid(row=3 , column=0, sticky="news", padx=20, pady=20)
 
 
-
-
 def logInForm():
     signUpbutton.pack_forget()
     logInbutton.pack_forget()
@@ -127,3 +155,5 @@ logInbutton.pack(side="right", expand=True)
 
 
 window.mainloop() #the application window will continue running until x is pressed and the main loop will stop being exectuted
+
+

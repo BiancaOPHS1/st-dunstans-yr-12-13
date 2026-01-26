@@ -210,6 +210,10 @@ window.mainloop() #the application window will continue running until x is press
 
 
 
+
+
+#home page 
+
 import tkinter as tk
 
 # ---------- Window ----------
@@ -319,6 +323,119 @@ tk.Label(
 # ---------- Run ----------
 root.mainloop()
 
+
+
+
+
+
+# physics page
+import tkinter as tk
+
+# ---------------- Window ----------------
+root = tk.Tk()
+root.title("Physics Quiz")
+root.geometry("1200x700")
+root.configure(bg="black")
+
+# ---------------- Left Sidebar ----------------
+left_sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
+left_sidebar.pack(side="left", fill="y")
+
+icon_style = {
+    "bg": "#0f2a3a",
+    "fg": "#1fa3c7",
+    "activebackground": "#143f56",
+    "bd": 0,
+    "font": ("Arial", 20),
+    "cursor": "hand2",
+    "width": 3
+}
+
+tk.Button(left_sidebar, text="🏠", **icon_style).pack(pady=30)
+tk.Button(left_sidebar, text="📊", **icon_style).pack(pady=30)
+tk.Button(left_sidebar, text="🧠", **icon_style).pack(pady=30)
+
+# ---------------- Right Sidebar ----------------
+right_sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
+right_sidebar.pack(side="right", fill="y")
+
+menu_btn = tk.Button(
+    right_sidebar,
+    text="≡",
+    bg="#0f2a3a",
+    fg="#1fa3c7",
+    activebackground="#143f56",
+    bd=0,
+    font=("Arial", 26),
+    cursor="hand2"
+)
+menu_btn.pack(pady=20)
+
+# ---------------- Main Area ----------------
+main = tk.Frame(root, bg="white")
+main.pack(side="left", fill="both", expand=True, padx=20, pady=20)
+
+# ---------------- Question Header ----------------
+question_header = tk.Frame(
+    main,
+    bg="#d39ac7",
+    height=100,
+    highlightbackground="#9b2d91",
+    highlightthickness=2
+)
+question_header.pack(fill="x", padx=40, pady=(30, 20))
+question_header.pack_propagate(False)
+
+tk.Label(
+    question_header,
+    text="Physics question",
+    bg="#d39ac7",
+    fg="black",
+    font=("Arial", 16)
+).pack(side="left", padx=20, pady=30)
+
+tk.Label(
+    question_header,
+    text="Topic, difficulty level",
+    bg="#d39ac7",
+    fg="black",
+    font=("Arial", 14)
+).pack(side="right", padx=20, pady=30)
+
+# ---------------- Answer Area ----------------
+answers_box = tk.Frame(
+    main,
+    bg="#155e7b",
+    height=380,
+    highlightbackground="black",
+    highlightthickness=2
+)
+answers_box.pack(fill="x", padx=40)
+answers_box.pack_propagate(False)
+
+answers_text = (
+    "A   response answer 1\n"
+    "B   response answer 2\n"
+    "C   response answer 3\n"
+    "D   response answer 4\n"
+    "E   response answer 5\n\n"
+    "Or a fill in the gap so\n"
+    "1.\n"
+    "2.\n"
+    "3."
+)
+
+tk.Label(
+    answers_box,
+    text=answers_text,
+    bg="#155e7b",
+    fg="white",
+    font=("Arial", 14),
+    justify="left"
+).pack(pady=40)
+
+# ---------------- Run ----------------
+root.mainloop()
 
 
 

@@ -210,4 +210,115 @@ window.mainloop() #the application window will continue running until x is press
 
 
 
+import tkinter as tk
+
+# ---------- Window ----------
+root = tk.Tk()
+root.title("User Details")
+root.geometry("1000x600")
+root.configure(bg="#0b0f14")
+
+# ---------- Sidebar ----------
+sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
+sidebar.pack(side="left", fill="y")
+
+def home_clicked():
+    print("Home clicked") 
+
+def stats_clicked():
+    print("Stats clicked")
+
+def physicsQuestions_clicked():
+    print("Physics Questions clicked")
+
+button_style = {
+    "bg": "#0f2a3a",
+    "fg": "#1fa3c7",
+    "activebackground": "#143f56",
+    "activeforeground": "white",
+    "bd": 0,
+    "font": ("Arial", 20),
+    "width": 3,
+    "cursor": "hand2"
+}
+
+home_btn = tk.Button(sidebar, text="🏠", command=home_clicked, **button_style)
+home_btn.pack(pady=30)
+
+stats_btn = tk.Button(sidebar, text="📊", command=stats_clicked, **button_style)
+stats_btn.pack(pady=30)
+
+physicsQuestions_btn = tk.Button(sidebar, text="🧠", command=physicsQuestions_clicked, **button_style)
+physicsQuestions_btn.pack(pady=30)
+
+# ---------- Main Content ----------
+main = tk.Frame(root, bg="white")
+main.pack(side="left", fill="both", expand=True, padx=20, pady=20)
+
+# ---------- Form Section ----------
+form = tk.Frame(main, bg="white")
+form.pack(anchor="nw", pady=30)
+
+def create_row(label_text, value_text):
+    row = tk.Frame(form, bg="white")
+    row.pack(anchor="w", pady=10)
+
+    label = tk.Label(
+        row,
+        text=label_text,
+        bg="white",
+        fg="black",
+        font=("Arial", 12),
+        width=22,
+        anchor="w"
+    )
+    label.pack(side="left")
+
+    entry = tk.Entry(
+        row,
+        bg="#155e7b",
+        fg="black",
+        font=("Arial", 12),
+        relief="flat",
+        width=35
+    )
+    entry.insert(0, value_text)
+    entry.pack(side="left", padx=20, ipady=6)
+
+create_row("First Name................", "") #the first name from the database should be displayed here
+create_row("Surname...................", "") #the surname from the database should be displayed here
+create_row("Email.....................", "") #the email from the database should be displayed here
+
+# ---------- Credentials Box ----------
+credentials = tk.Frame(
+    main,
+    bg="#155e7b",
+    width=600,
+    height=200
+)
+credentials.pack(pady=40)
+credentials.pack_propagate(False)
+
+tk.Label(
+    credentials,
+    text="Username:", #the username from the database should be displayed here
+    bg="#155e7b",
+    fg="black",
+    font=("Arial", 14),
+    pady=20
+).pack()
+
+tk.Label(
+    credentials,
+    text="Password:", #the password from the database should be displayed here as asterisks
+    bg="#155e7b",
+    fg="black",
+    font=("Arial", 14)
+).pack()
+
+# ---------- Run ----------
+root.mainloop()
+
+
+
 

@@ -212,13 +212,11 @@ window.mainloop() #the application window will continue running until x is press
 
 
 
-#home page 
-
 import tkinter as tk
 
 # ---------- Window ----------
 root = tk.Tk()
-root.title("User Details")
+root.title("Study software")
 root.geometry("1000x600")
 root.configure(bg="#0b0f14")
 
@@ -226,14 +224,31 @@ root.configure(bg="#0b0f14")
 sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
 sidebar.pack(side="left", fill="y")
 
+homeBtnClicked = False
+statsBtnClicked = False
+physicsBtnClicked = False
+
 def home_clicked():
+    global homeBtnClicked
+    homeBtnClicked = True
     print("Home clicked") 
+    hideForm_physics()
+    showForm_home()
+
 
 def stats_clicked():
+    global statsBtnClicked
+    statsBtnClicked = True
+    hideForm_home()
+    hideForm_physics()
     print("Stats clicked")
 
-def physicsQuestions_clicked():
-    print("Physics Questions clicked")
+def physics_clicked():
+    global physicsBtnClicked
+    physicsBtnClicked = True
+    hideForm_home()
+    showForm_physics()
+    
 
 button_style = {
     "bg": "#0f2a3a",
@@ -252,189 +267,182 @@ home_btn.pack(pady=30)
 stats_btn = tk.Button(sidebar, text="📊", command=stats_clicked, **button_style)
 stats_btn.pack(pady=30)
 
-physicsQuestions_btn = tk.Button(sidebar, text="🧠", command=physicsQuestions_clicked, **button_style)
-physicsQuestions_btn.pack(pady=30)
+physics_btn = tk.Button(sidebar, text="🧠", command=physics_clicked, **button_style)
+physics_btn.pack(pady=30)
 
 # ---------- Main Content ----------
 main = tk.Frame(root, bg="white")
 main.pack(side="left", fill="both", expand=True, padx=20, pady=20)
 
-# ---------- Form Section ----------
 form = tk.Frame(main, bg="white")
 form.pack(anchor="nw", pady=30)
 
-def create_row(label_text, value_text):
-    row = tk.Frame(form, bg="white")
-    row.pack(anchor="w", pady=10)
+# ---------- Form Section ----------
+def hideForm_home():
+    for child in form.winfo_children():
+        child.forget()
 
-    label = tk.Label(
-        row,
-        text=label_text,
-        bg="white",
-        fg="black",
-        font=("Arial", 12),
-        width=22,
-        anchor="w"
+def showForm_home():
+    def create_row(label_text, value_text):
+        row = tk.Frame(form, bg="white")
+        row.pack(anchor="w", pady=10)
+
+        label = tk.Label(
+            row,
+            text=label_text,
+            bg="white",
+            fg="black",
+            font=("Arial", 12),
+            width=22,
+            anchor="w"
+        )
+        
+        label.pack(side="left")
+
+        entry = tk.Entry(
+            row,
+            bg="#155e7b",
+            fg="black",
+            font=("Arial", 12),
+            relief="flat",
+            width=35
+        )
+        entry.insert(0, value_text)
+        entry.pack(side="left", padx=20, ipady=6)
+
+    create_row("First Name................", "")
+    create_row("Surname...................", "")
+    create_row("Email.....................", "")
+
+    # ---------- Credentials Box ----------
+    credentials = tk.Frame(
+        form,
+        bg="#155e7b",
+        width=600,
+        height=200
     )
-    label.pack(side="left")
+    credentials.pack(pady=40)
+    credentials.pack_propagate(False)
 
-    entry = tk.Entry(
-        row,
+    tk.Label(
+        credentials,
+        text="Username:",
         bg="#155e7b",
         fg="black",
-        font=("Arial", 12),
-        relief="flat",
-        width=35
+        font=("Arial", 14),
+        pady=20
+    ).pack()
+
+    tk.Label(
+        credentials,
+        text="Password:",
+        bg="#155e7b",
+        fg="black",
+        font=("Arial", 14)
+    ).pack()
+
+def hideForm_physics():
+    for child in form.winfo_children():
+        child.forget()
+
+def showForm_physics():
+    # ---------------- Left Sidebar ----------------
+
+    icon_style = {
+        "bg": "#0f2a3a",
+        "fg": "#1fa3c7",
+        "activebackground": "#143f56",
+        "bd": 0,
+        "font": ("Arial", 20),
+        "cursor": "hand2",
+        "width": 3
+    }
+
+    # ---------------- Right Sidebar ----------------
+    right_sidebar = tk.Frame(form, bg="#0f2a3a", width=80)
+    right_sidebar.pack(side="right", fill="y", expand=True)
+
+    menu_btn = tk.Button(
+        right_sidebar,
+        text="≡",
+        bg="#0f2a3a",
+        fg="#1fa3c7",
+        activebackground="#143f56",
+        bd=0,
+        font=("Arial", 26),
+        cursor="hand2"
     )
-    entry.insert(0, value_text)
-    entry.pack(side="left", padx=20, ipady=6)
+    menu_btn.pack()
 
-create_row("First Name................", "") #the first name from the database should be displayed here
-create_row("Surname...................", "") #the surname from the database should be displayed here
-create_row("Email.....................", "") #the email from the database should be displayed here
+    # ---------------- Main Area ----------------
+    main = tk.Frame(form, bg="white")
+    main.pack(side="left", fill="both", expand=True)
 
-# ---------- Credentials Box ----------
-credentials = tk.Frame(
-    main,
-    bg="#155e7b",
-    width=600,
-    height=200
-)
-credentials.pack(pady=40)
-credentials.pack_propagate(False)
+    # ---------------- Question Header ----------------
+    question_header = tk.Frame(
+        main,
+        bg="#d39ac7",
+        height=100,
+        highlightbackground="#9b2d91",
+        highlightthickness=2
+    )
+    question_header.pack(fill="x", padx=40, pady=(30, 20), expand=True)
+    #pack_propagate() sets whether the frame should adjust its size to fit its contents
+    #question_header.pack_propagate(False)
+    question_header.pack_propagate(True)
 
-tk.Label(
-    credentials,
-    text="Username:", #the username from the database should be displayed here
-    bg="#155e7b",
-    fg="black",
-    font=("Arial", 14),
-    pady=20
-).pack()
+    tk.Label(
+        question_header,
+        text="Physics question",
+        bg="#d39ac7",
+        fg="black",
+        font=("Arial", 16) ,
+        height=2 ,
+        width=30 ,
+    ).pack(side="left", padx=20, pady=30)
 
-tk.Label(
-    credentials,
-    text="Password:", #the password from the database should be displayed here as asterisks
-    bg="#155e7b",
-    fg="black",
-    font=("Arial", 14)
-).pack()
+    tk.Label(
+        question_header,
+        text="Topic, difficulty level",
+        bg="#d39ac7",
+        fg="black",
+        font=("Arial", 14) ,
+        height=2 ,
+        width=30 ,
+    ).pack(side="right", padx=20, pady=30)
+
+    # ---------------- Answer Area ----------------
+    answers_box = tk.Frame(
+        main,
+        bg="#155e7b",
+        height=380,
+        highlightbackground="black",
+        highlightthickness=2
+    )
+    answers_box.pack(fill="x", padx=40)
+    answers_box.pack_propagate(False)
+
+    answers_text = (
+        # Placeholder text for physics answers
+    )
+
+    tk.Label(
+        answers_box,
+        text=answers_text,
+        bg="#155e7b",
+        fg="white",
+        font=("Arial", 14),
+        justify="left"
+    ).pack(pady=40)
+    
+    print("Physics clicked")
+
+    # ---------- Credentials Box ----------
+    
+  
+showForm_home()
 
 # ---------- Run ----------
-root.mainloop()
-
-
-
-
-
-
-# physics page
-import tkinter as tk
-
-# ---------------- Window ----------------
-root = tk.Tk()
-root.title("Physics Quiz")
-root.geometry("1200x700")
-root.configure(bg="black")
-
-# ---------------- Left Sidebar ----------------
-left_sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
-left_sidebar.pack(side="left", fill="y")
-
-icon_style = {
-    "bg": "#0f2a3a",
-    "fg": "#1fa3c7",
-    "activebackground": "#143f56",
-    "bd": 0,
-    "font": ("Arial", 20),
-    "cursor": "hand2",
-    "width": 3
-}
-
-tk.Button(left_sidebar, text="🏠", **icon_style).pack(pady=30)
-tk.Button(left_sidebar, text="📊", **icon_style).pack(pady=30)
-tk.Button(left_sidebar, text="🧠", **icon_style).pack(pady=30)
-
-# ---------------- Right Sidebar ----------------
-right_sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
-right_sidebar.pack(side="right", fill="y")
-
-menu_btn = tk.Button(
-    right_sidebar,
-    text="≡",
-    bg="#0f2a3a",
-    fg="#1fa3c7",
-    activebackground="#143f56",
-    bd=0,
-    font=("Arial", 26),
-    cursor="hand2"
-)
-menu_btn.pack(pady=20)
-
-# ---------------- Main Area ----------------
-main = tk.Frame(root, bg="white")
-main.pack(side="left", fill="both", expand=True, padx=20, pady=20)
-
-# ---------------- Question Header ----------------
-question_header = tk.Frame(
-    main,
-    bg="#d39ac7",
-    height=100,
-    highlightbackground="#9b2d91",
-    highlightthickness=2
-)
-question_header.pack(fill="x", padx=40, pady=(30, 20))
-question_header.pack_propagate(False)
-
-tk.Label(
-    question_header,
-    text="Physics question",
-    bg="#d39ac7",
-    fg="black",
-    font=("Arial", 16)
-).pack(side="left", padx=20, pady=30)
-
-tk.Label(
-    question_header,
-    text="Topic, difficulty level",
-    bg="#d39ac7",
-    fg="black",
-    font=("Arial", 14)
-).pack(side="right", padx=20, pady=30)
-
-# ---------------- Answer Area ----------------
-answers_box = tk.Frame(
-    main,
-    bg="#155e7b",
-    height=380,
-    highlightbackground="black",
-    highlightthickness=2
-)
-answers_box.pack(fill="x", padx=40)
-answers_box.pack_propagate(False)
-
-answers_text = (
-    "A   response answer 1\n"
-    "B   response answer 2\n"
-    "C   response answer 3\n"
-    "D   response answer 4\n"
-    "E   response answer 5\n\n"
-    "Or a fill in the gap so\n"
-    "1.\n"
-    "2.\n"
-    "3."
-)
-
-tk.Label(
-    answers_box,
-    text=answers_text,
-    bg="#155e7b",
-    fg="white",
-    font=("Arial", 14),
-    justify="left"
-).pack(pady=40)
-
-# ---------------- Run ----------------
 root.mainloop()
 
 

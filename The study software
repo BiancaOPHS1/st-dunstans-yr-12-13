@@ -220,9 +220,24 @@ root.title("Study software")
 root.geometry("1000x600")
 root.configure(bg="#0b0f14")
 
-# ---------- Sidebar ----------
+# ---------- main Sidebar ----------
 sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
 sidebar.pack(side="left", fill="y")
+# ---------------- Right Sidebar ----------------
+rsidebar = tk.Frame(root, bg="#0f2a3a", width=80)
+rsidebar.pack(side="right", fill="y", expand=True)
+
+menu_btn = tk.Button(
+    rsidebar,
+    text="≡",
+    bg="#0f2a3a",
+    fg="#1fa3c7",
+    activebackground="#143f56",
+    bd=0,
+    font=("Arial", 26),
+    cursor="hand2"
+)
+menu_btn.pack()
 
 homeBtnClicked = False
 statsBtnClicked = False
@@ -233,20 +248,25 @@ def home_clicked():
     homeBtnClicked = True
     print("Home clicked") 
     hideForm_physics()
+    hideForm_stats()
     showForm_home()
 
 
 def stats_clicked():
     global statsBtnClicked
     statsBtnClicked = True
+    print("Stats clicked")
     hideForm_home()
     hideForm_physics()
-    print("Stats clicked")
+    showForm_stats()
+    
 
 def physics_clicked():
     global physicsBtnClicked
     physicsBtnClicked = True
+    print("Physics clicked")
     hideForm_home()
+    hideForm_stats()
     showForm_physics()
     
 
@@ -358,22 +378,6 @@ def showForm_physics():
         "width": 3
     }
 
-    # ---------------- Right Sidebar ----------------
-    right_sidebar = tk.Frame(form, bg="#0f2a3a", width=80)
-    right_sidebar.pack(side="right", fill="y", expand=True)
-
-    menu_btn = tk.Button(
-        right_sidebar,
-        text="≡",
-        bg="#0f2a3a",
-        fg="#1fa3c7",
-        activebackground="#143f56",
-        bd=0,
-        font=("Arial", 26),
-        cursor="hand2"
-    )
-    menu_btn.pack()
-
     # ---------------- Main Area ----------------
     main = tk.Frame(form, bg="white")
     main.pack(side="left", fill="both", expand=True)
@@ -435,9 +439,14 @@ def showForm_physics():
         justify="left"
     ).pack(pady=40)
     
-    print("Physics clicked")
+    
 
-    # ---------- Credentials Box ----------
+def hideForm_stats():
+    for child in form.winfo_children():
+        child.forget()
+
+def showForm_stats():
+    
     
   
 showForm_home()

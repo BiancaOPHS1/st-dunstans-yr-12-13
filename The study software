@@ -50,7 +50,7 @@ def signUpForm():
             return
         hasNumber = False
         for i in range (0, len(passwordValue)): #loop to check that there is a number in the password
-            if passwordValue[i] == "0" or passwordValue[i] == "1" or passwordValue[i] == "2" or passwordValue[i] == "3" or passwordValue[i] == "4" or passwordValue[i] == "5" or passwordValue[i] == "6" or passwordValue[i] == "7" or passwordValue[i] == "8" or passwordValue[i] == "9":
+            if passwordValue[i] in "0123456789":
                 hasNumber = True
         if not hasNumber:
             tkinter.messagebox.showerror(title= "Invalid Password", message="Password must contain at least one number")#popup error message
@@ -193,7 +193,6 @@ def verifyLogIn():
         return True
 
  
-
 #creating the sign up and log in buttons
 signUpbutton = tkinter.Button(window, text = "Sign-up", command= signUpForm) #creates a button called sign in
 signUpbutton.config(font = ("ariel",50),bg = "lightblue",fg = "black") #the sign in button will have the ariel font and size 50
@@ -207,12 +206,29 @@ logInbutton.pack(side="right", expand=True)
 
 window.mainloop() #the application window will continue running until x is pressed and the main loop will stop being exectuted#
 
+if verifyLogIn() == True:
+    #run the main program only if the user has successfully logged in or signed up
+    import studysoft
+
+    
 
 
 
 
 
+
+
+
+
+# ---------- Run ----------
 import tkinter as tk
+from tkinter import ttk#
+
+# ---------- style ----------
+style_dict = {
+    "font_size": 20,
+    "font_family": "Arial",
+}
 
 # ---------- Window ----------
 root = tk.Tk()
@@ -234,7 +250,8 @@ menu_btn = tk.Button(
     fg="#1fa3c7",
     activebackground="#143f56",
     bd=0,
-    font=("Arial", 26),
+    font=("Arial", style_dict["font_size"]),
+    command=lambda: create_font_color_panel(),
     cursor="hand2"
 )
 menu_btn.pack()
@@ -312,7 +329,7 @@ def showForm_home():
             text=label_text,
             bg="white",
             fg="black",
-            font=("Arial", 12),
+            font=(style_dict["font_family"], style_dict["font_size"]),
             width=22,
             anchor="w"
         )
@@ -323,7 +340,7 @@ def showForm_home():
             row,
             bg="#155e7b",
             fg="black",
-            font=("Arial", 12),
+            font=(style_dict["font_family"], style_dict["font_size"]),
             relief="flat",
             width=35
         )
@@ -349,7 +366,7 @@ def showForm_home():
         text="Username:",
         bg="#155e7b",
         fg="black",
-        font=("Arial", 14),
+        font=(style_dict["font_family"], style_dict["font_size"]),
         pady=20
     ).pack()
 
@@ -358,7 +375,7 @@ def showForm_home():
         text="Password:",
         bg="#155e7b",
         fg="black",
-        font=("Arial", 14)
+        font=(style_dict["font_family"], style_dict["font_size"])
     ).pack()
 
 def hideForm_physics():
@@ -373,7 +390,7 @@ def showForm_physics():
         "fg": "#1fa3c7",
         "activebackground": "#143f56",
         "bd": 0,
-        "font": ("Arial", 20),
+        "font": (style_dict["font_family"], style_dict["font_size"]),
         "cursor": "hand2",
         "width": 3
     }
@@ -400,7 +417,7 @@ def showForm_physics():
         text="Physics question",
         bg="#d39ac7",
         fg="black",
-        font=("Arial", 16) ,
+        font=(style_dict["font_family"], style_dict["font_size"]),
         height=2 ,
         width=30 ,
     ).pack(side="left", padx=20, pady=30)
@@ -410,7 +427,7 @@ def showForm_physics():
         text="Topic, difficulty level",
         bg="#d39ac7",
         fg="black",
-        font=("Arial", 14) ,
+        font=(style_dict["font_family"], style_dict["font_size"]),
         height=2 ,
         width=30 ,
     ).pack(side="right", padx=20, pady=30)
@@ -435,7 +452,7 @@ def showForm_physics():
         text=answers_text,
         bg="#155e7b",
         fg="white",
-        font=("Arial", 14),
+        font=(style_dict["font_family"], style_dict["font_size"]),
         justify="left"
     ).pack(pady=40)
     
@@ -446,13 +463,88 @@ def hideForm_stats():
         child.forget()
 
 def showForm_stats():
+    # ---------------- Canvas for Graph ----------------
+    canvas = tk.Canvas(form, bg="white", highlightthickness=0)
+    canvas.pack(fill="both", expand=True)
+
+    # ---------------- Axes ----------------
+    # Y axis
+    canvas.create_line(150, 100, 150, 550, width=2)
+    # X axis
+    canvas.create_line(150, 550, 850, 550, width=2)
+
+    # ---------------- Axis Labels ----------------
+    canvas.create_text(
+        0, 0,
+        text="Number of questions answered correctly weekly",
+        angle=0,
+        font=(style_dict["font_family"], style_dict["font_size"])
+    )
+
+    canvas.create_text(
+        500, 600,
+        text="Number of questions answered weekly",
+        font=(style_dict["font_family"], style_dict["font_size"])
+    )
+    points = []
+    for x, y in points:
+        canvas.create_line(x-6, y-6, x+6, y+6, width=2)
+        canvas.create_line(x-6, y+6, x+6, y-6, width=2)
+
+    # ---------------- Improvement Box ----------------
+    canvas.create_text(
+        900, 200,
+        text="Improvement from last week\npercentage %",
+        font=(style_dict["font_family"], style_dict["font_size"]),
+        anchor="nw"
+    )
     
+    canvas.create_rectangle(
+        900, 260, 1150, 310,
+        fill="#9b2d91",
+        outline="black",
+        width=2
+    )
+
+def create_font_color_panel():
+    form = tk.Tk()
+    """
+    Creates a panel with font and color selection dropdowns
     
-  
+    Parameters:
+    - parent_frame: The frame to place the controls in
+    - target_widget: The widget to apply font/color changes to
+    """
+    # Control Panel Frame
+    control_frame = tk.Frame(form, bg="#0f2a3a", relief="raised", bd=2)
+    control_frame.pack(pady=10, padx=10, fill="x")
+    
+    # Font Selection
+    font_label = tk.Label(control_frame, text="Font:", fg="#1fa3c7", bg="#0f2a3a")
+    font_label.pack(side="left", padx=5, pady=5)
+    
+    fonts = ["Arial", "Helvetica", "Courier", "Times New Roman", "Segoe UI", "Verdana"]
+    font_var = tk.StringVar(value="Arial")
+    font_dropdown = ttk.Combobox(control_frame, textvariable=font_var, values=fonts, state="readonly", width=12)
+    font_dropdown.pack(side="left", padx=5, pady=5)
+    
+    # Font Size Selection
+    size_label = tk.Label(control_frame, text="Size:", fg="#1fa3c7", bg="#0f2a3a")
+    size_label.pack(side="left", padx=5, pady=5)
+    
+    size_var = tk.StringVar(value="12")
+    size_dropdown = ttk.Combobox(control_frame, textvariable=size_var, values=["10", "12", "14", "16", "18", "20", "24"], state="readonly", width=5)
+    size_dropdown.pack(side="left", padx=5, pady=5)
+
+    #apply button
+    def apply_changes():
+        style_dict["font_family"] = font_var.get()
+        style_dict["font_size"] = int(size_var.get())
+        form.destroy()
+    apply_btn = tk.Button(control_frame, text="Apply", command=apply_changes, bg="#1fa3c7", fg="white", cursor="hand2") 
+    apply_btn.pack(side="left", padx=10, pady=5)
+
+
 showForm_home()
 
-# ---------- Run ----------
 root.mainloop()
-
-
-

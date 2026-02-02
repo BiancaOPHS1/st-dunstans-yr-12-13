@@ -1,6 +1,7 @@
 import tkinter
 import sqlite3
 import tkinter.messagebox
+import globals
 
 #creating a window
 window = tkinter.Tk() #this opens up the window
@@ -149,12 +150,31 @@ def logInForm():
     def submit():
         global usernameValue
         global passwordValue
+        global CURRENT_USER
         usernameValue = usernameEntry.get() #getting the value entered in the username entry
         passwordValue = passwordEntry.get() #getting the value entered in the password entry
         print("Username:", usernameValue)
         print("Password:", passwordValue)
         if verifyLogIn() and checkCredentials(usernameValue, passwordValue):
-            window.destroy() #closes the window after submission
+            # fetch user details from database
+            conn = sqlite3.connect('user_data.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT first_name, last_name, email, username, password FROM users WHERE username=?", (usernameValue,))
+            row = cursor.fetchone()
+            conn.close()
+            user_details = {}
+            if row is not None:
+                user_details = {"first_name": row[0], "last_name": row[1], "email": row[2], "username": row[3], "password": row[4]}
+
+            window.destroy() # close login window
+
+            # import and launch studysoft with the current user
+            globals.CURRENT_USER = user_details
+
+            import studysoft
+            studysoft.showForm_home()
+            studysoft.CURRENT_USER = user_details
+            studysoft.root.mainloop()
 
 
     frame= tkinter.Frame(window) #creates a frame inside the window
@@ -203,12 +223,13 @@ logInbutton.config( font = ("ariel",50),bg = "lightgreen",fg = "black") #the log
 logInbutton.pack(side="right", expand=True)   
 
 
-
 window.mainloop() #the application window will continue running until x is pressed and the main loop will stop being exectuted#
 
 if verifyLogIn() == True:
     #run the main program only if the user has successfully logged in or signed up
     import studysoft
+
+    
 
     
 
@@ -222,7 +243,11 @@ if verifyLogIn() == True:
 
 # ---------- Run ----------
 import tkinter as tk
-from tkinter import ttk#
+from tkinter import ttk, messagebox
+import globals
+
+# Current logged-in user (set by caller)
+CURRENT_USER = globals.CURRENT_USER
 
 # ---------- style ----------
 style_dict = {
@@ -251,7 +276,7 @@ menu_btn = tk.Button(
     activebackground="#143f56",
     bd=0,
     font=("Arial", style_dict["font_size"]),
-    command=lambda: create_font_color_panel(),
+    command=lambda: create_font_colour_panel(),
     cursor="hand2"
 )
 menu_btn.pack()
@@ -320,7 +345,13 @@ def hideForm_home():
         child.forget()
 
 def showForm_home():
-    def create_row(label_text, value_text):
+    import sqlite3
+    
+    # Store entry widgets for edit mode
+    entries_dict = {}
+    edit_mode = [False]  # Use list to allow modification in nested function
+    
+    def create_row(label_text, value_text, field_name):
         row = tk.Frame(form, bg="white")
         row.pack(anchor="w", pady=10)
 
@@ -342,41 +373,125 @@ def showForm_home():
             fg="black",
             font=(style_dict["font_family"], style_dict["font_size"]),
             relief="flat",
-            width=35
+            width=35,
         )
-        entry.insert(0, value_text)
         entry.pack(side="left", padx=20, ipady=6)
+        entry.insert(0, value_text)
+        entry.config(state="readonly")
+        entries_dict[field_name] = entry
 
-    create_row("First Name................", "")
-    create_row("Surname...................", "")
-    create_row("Email.....................", "")
+    # populate with CURRENT_USER if available
+    first = ""
+    last = ""
+    email = ""
+    username = ""
+    password = ""
+    if CURRENT_USER is not None:
+        first = CURRENT_USER.get("first_name", "")
+        last = CURRENT_USER.get("last_name", "")
+        email = CURRENT_USER.get("email", "")
+        username = CURRENT_USER.get("username", "")
+        password = CURRENT_USER.get("password", "")
 
-    # ---------- Credentials Box ----------
-    credentials = tk.Frame(
-        form,
-        bg="#155e7b",
-        width=600,
-        height=200
+    create_row("First Name................", first, "first_name")
+    create_row("Surname...................", last, "last_name")
+    create_row("Email.....................", email, "email")
+    create_row("Username.................", username, "username")
+    
+    # Password row with masked input
+    row = tk.Frame(form, bg="white")
+    row.pack(anchor="w", pady=10)
+    label = tk.Label(
+        row,
+        text="Password.................",
+        bg="white",
+        fg="black",
+        font=(style_dict["font_family"], style_dict["font_size"]),
+        width=22,
+        anchor="w"
     )
-    credentials.pack(pady=40)
-    credentials.pack_propagate(False)
-
-    tk.Label(
-        credentials,
-        text="Username:",
+    label.pack(side="left")
+    password_entry = tk.Entry(
+        row,
         bg="#155e7b",
         fg="black",
         font=(style_dict["font_family"], style_dict["font_size"]),
-        pady=20
-    ).pack()
+        relief="flat",
+        width=35,
+        show="*",
+    )
+    password_entry.insert(0, password)
+    password_entry.config(state="readonly")
+    password_entry.pack(side="left", padx=20, ipady=6)
+    entries_dict["password"] = password_entry
+    
+    #button frame
+    button_frame = tk.Frame(form, bg="white")
+    button_frame.pack(pady=20)
+    
+    def toggle_edit():
+        if not edit_mode[0]:
+            # Enable edit mode
+            for entry in entries_dict.values():
+                entry.config(state="normal")
+            edit_btn.config(text="Save", command=save_changes)
+            edit_mode[0] = True
+        else:
+            # Save and disable edit mode
+            save_changes()
+    
+    def save_changes():
+        try:
+            # Get updated values from entries
+            updated_data = {
+                "first_name": entries_dict["first_name"].get(),
+                "last_name": entries_dict["last_name"].get(),
+                "email": entries_dict["email"].get(),
+                "password": entries_dict["password"].get()
+            }
+            
+            # Update database
+            conn = sqlite3.connect('user_data.db')
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE users 
+                SET first_name=?, last_name=?, email=?, password=? 
+                WHERE username=?
+            """, (updated_data["first_name"], updated_data["last_name"], 
+                  updated_data["email"], updated_data["password"], 
+                  CURRENT_USER["username"]))
+            conn.commit()
+            conn.close()
+            
+            # Update CURRENT_USER in memory
+            CURRENT_USER["first_name"] = updated_data["first_name"]
+            CURRENT_USER["last_name"] = updated_data["last_name"]
+            CURRENT_USER["email"] = updated_data["email"]
+            CURRENT_USER["password"] = updated_data["password"]
+            
+            # Disable edit mode
+            for entry in entries_dict.values():
+                entry.config(state="readonly")
+            edit_btn.config(text="Edit", command=toggle_edit)
+            edit_mode[0] = False
+            
+            tk.messagebox.showinfo("Success", "Your details have been updated!")
+        except Exception as e:
+            tk.messagebox.showerror("Error", f"Failed to update details: {str(e)}")
+    
+    edit_btn = tk.Button(
+        button_frame,
+        text="Edit",
+        bg="#1fa3c7",
+        fg="white",
+        font=(style_dict["font_family"], style_dict["font_size"]),
+        cursor="hand2",
+        command=toggle_edit,
+        padx=20,
+        pady=5
+    )
+    edit_btn.pack(side="left", padx=5)
 
-    tk.Label(
-        credentials,
-        text="Password:",
-        bg="#155e7b",
-        fg="black",
-        font=(style_dict["font_family"], style_dict["font_size"])
-    ).pack()
 
 def hideForm_physics():
     for child in form.winfo_children():
@@ -506,14 +621,14 @@ def showForm_stats():
         width=2
     )
 
-def create_font_color_panel():
+def create_font_colour_panel():
     form = tk.Tk()
     """
-    Creates a panel with font and color selection dropdowns
+    Creates a panel with font and colour selection dropdowns
     
     Parameters:
     - parent_frame: The frame to place the controls in
-    - target_widget: The widget to apply font/color changes to
+    - target_widget: The widget to apply font/colour changes to
     """
     # Control Panel Frame
     control_frame = tk.Frame(form, bg="#0f2a3a", relief="raised", bd=2)
@@ -545,6 +660,18 @@ def create_font_color_panel():
     apply_btn.pack(side="left", padx=10, pady=5)
 
 
-showForm_home()
+if __name__ == "__main__":
+    showForm_home()
+    root.mainloop()
 
-root.mainloop()
+
+
+
+
+
+
+
+
+
+
+CURRENT_USER = {}

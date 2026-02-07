@@ -1,7 +1,259 @@
+import tkinter
+import sqlite3
+import tkinter.messagebox
+import globals
+
+#creating a window
+window = tkinter.Tk() #this opens up the window
+window.title("Sign-up or Log-in") #this gives the window a name called signup or login
+
+def signUpForm():
+    signUpbutton.pack_forget()
+    logInbutton.pack_forget()
+    frame= tkinter.Frame(window) #creates a frame inside the windowm
+    frame.pack()
+
+    def submit():
+        firstNameValue = firstNameEntry.get() #getting the value entered in the first name entry
+        if len(firstNameValue)<1 or len(firstNameValue)>20: 
+            tkinter.messagebox.showerror(title= "Invalid First Name", message="First name must be between 1 and 20 characters.") #popup error message
+            return 
+
+        lastNameValue = lastNameEntry.get() #getting the value entered in the last name entry
+        if len(lastNameValue)<1 or len(lastNameValue)>40:
+            tkinter.messagebox.showerror(title= "Invalid Last Name", message="Last name must be between 1 and 40 characters.") #popup error message
+            return
+        
+        usernameValue = usernameEntry.get() #getting the value entered in the username entry
+        if len(usernameValue)<1 or len(usernameValue)>20:
+            tkinter.messagebox.showerror(title= "Invalid Username", message="Username must be between 1 and 20 characters.") #popup error message
+            return
+        usernameExists = False
+        conn = sqlite3.connect('user_data.db') 
+        cursor = conn.cursor()
+        cursor.execute("SELECT username FROM users WHERE username=?", (usernameValue,)) #checking if the username already exists in the database and if it does then a popup error message will appear
+        if cursor.fetchone() is not None:
+            usernameExists = True
+            tkinter.messagebox.showerror(title= "Invalid Username", message="Username already exists.")
+            return
+        conn.close()
+
+        passwordValue = passwordEntry.get() #getting the value entered in the password entry
+        if len(passwordValue) <8:
+            tkinter.messagebox.showerror(title= "Invalid Password", message="Password must be 8 characters or more.") #popup error message
+            return
+        hasSpecialChar = False 
+        for i in range (0, len(passwordValue)): #loop to check that there is a special character in the password
+            if passwordValue[i] in "!@#$%^&*-_=+;:,<>?":
+                hasSpecialChar = True
+        if not hasSpecialChar:
+            tkinter.messagebox.showerror(title= "Invalid Password", message="Password must contain at least one special character")
+            return
+        hasNumber = False
+        for i in range (0, len(passwordValue)): #loop to check that there is a number in the password
+            if passwordValue[i] in "0123456789":
+                hasNumber = True
+        if not hasNumber:
+            tkinter.messagebox.showerror(title= "Invalid Password", message="Password must contain at least one number")#popup error message
+            return
+        
+        emailValue = emailEntry.get() #getting the value entered in the email entry
+        if "@" not in emailValue or "." not in emailValue: #checking that the email contains @ and .
+            tkinter.messagebox.showerror(title= "Invalid Email", message="Email must contain @ and . ")
+            return
+        print("First Name:", firstNameValue)
+        print("Last Name:", lastNameValue)
+        print("Username:", usernameValue)
+        print("Password:", passwordValue)
+        print("Email:", emailValue)
+
+        #creating or connecting to a database
+        conn = sqlite3.connect('user_data.db')
+        userTable_query = '''CREATE TABLE IF NOT EXISTS users (userID INTEGER PRIMARY KEY,first_name TEXT, last_name TEXT, username TEXT, password TEXT, email TEXT) 
+        '''
+        conn.execute(userTable_query)
+        #inserting data into the database
+        userTable_query = '''INSERT INTO users (userID,first_name, last_name, username, password, email) VALUES (?, ?, ?, ?, ?, ?)'''
+        userTable_tuple = (None, firstNameValue, lastNameValue, usernameValue, passwordValue, emailValue)
+        cursor = conn.cursor()
+        cursor.execute(userTable_query, userTable_tuple)
+        conn.commit()
+        conn.close()
+
+        window.destroy() #closes the window after submission
+
+
+    signUpFrame = tkinter.LabelFrame(frame, text="Personal information") #creates a labelled frame inside the frame
+    signUpFrame.grid(row= 0, column=0, padx=20, pady=20) #places the labelled frame at row 0 column 0 of the frame
+    signUpFrame2 = tkinter.LabelFrame(frame, text="Account details") #creates a labelled frame inside the frame
+    signUpFrame2.grid(row=1, column=0,sticky = "news", padx=20, pady=20) #places the labelled frame at row 1 column 0 of the frame
+    signUpFrame3 = tkinter.LabelFrame(frame, text="Email") #creates a labelled frame inside the frame
+    signUpFrame3.grid(row=2, column=0,sticky = "news", padx=20, pady=20) #places the labelled frame at row 2 column 0 of the frame
+
+    firstName = tkinter.Label(signUpFrame, text="First name:") #creating the firstname entry
+    firstName.config(font = ("ariel",15))
+    firstName.grid(row=0, column=0)
+    firstNameEntry = tkinter.Entry(signUpFrame)
+    firstNameEntry.grid(row=1, column=0)
+
+    lastName = tkinter.Label(signUpFrame, text="Last name:") #creating the lastname entry
+    lastName.config(font = ("ariel",15))
+    lastName.grid(row=0, column=1)
+    lastNameEntry = tkinter.Entry(signUpFrame)
+    lastNameEntry.grid(row=1, column=1)
+
+    username = tkinter.Label(signUpFrame2, text="Username:") #creating the username entry
+    username.config(font = ("ariel",15))
+    username.grid(row=0, column=0)
+    usernameEntry = tkinter.Entry(signUpFrame2)
+    usernameEntry.grid(row=1, column=0)
+
+    password = tkinter.Label(signUpFrame2, text="Password:") #creating the password entry
+    password.config(font = ("ariel",15))
+    password.grid(row=0, column=1)
+    passwordEntry = tkinter.Entry(signUpFrame2, show="*")
+    passwordEntry.grid(row=1, column=1)
+
+    email = tkinter.Label(signUpFrame3, text="Email:") #creating the email entry
+    signUpFrame.grid_columnconfigure(0, weight=1)
+    email.config(font = ("ariel",15))
+    email.grid(row=0, column=0, columnspan=1, sticky="nsew")
+    emailEntry = tkinter.Entry(signUpFrame3)
+    emailEntry.grid(row=1, column=0, columnspan=1,sticky="nsew")
+
+    submitButton = tkinter.Button(frame, text="Submit", command= submit) #creating the submit button
+    submitButton.config(font = ("ariel",15))
+    submitButton.grid(row=3 , column=0, sticky="news", padx=20, pady=20)
+
+attemptCount = 0
+def checkCredentials(username, password):
+    conn = sqlite3.connect('user_data.db') 
+    cursor = conn.cursor()
+    cursor.execute("SELECT password FROM users WHERE username=?", (username, )) #checking if the username and password match in the database
+    fetchedPassword = cursor.fetchone()
+    global attemptCount
+    if fetchedPassword != (password,):
+        attemptCount += 1
+        tkinter.messagebox.showerror(title= "Incorrect Credentials", message="Password is incorrect. This is attempt " + str(attemptCount) ) #popup error message
+        if attemptCount >= 3:
+            tkinter.messagebox.showerror(title= "Too Many Attempts", message="Too many incorrect attempts. Try re-setting password") #popup error message
+        return False    
+    else:
+        conn.close()
+        return True
+
+def logInForm():
+
+    signUpbutton.pack_forget()
+    logInbutton.pack_forget()
+
+    def submit():
+        global usernameValue
+        global passwordValue
+        global CURRENT_USER
+        usernameValue = usernameEntry.get() #getting the value entered in the username entry
+        passwordValue = passwordEntry.get() #getting the value entered in the password entry
+        print("Username:", usernameValue)
+        print("Password:", passwordValue)
+        if verifyLogIn() and checkCredentials(usernameValue, passwordValue):
+            # fetch user details from database
+            conn = sqlite3.connect('user_data.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT first_name, last_name, email, username, password FROM users WHERE username=?", (usernameValue,))
+            row = cursor.fetchone()
+            conn.close()
+            user_details = {}
+            if row is not None:
+                user_details = {"first_name": row[0], "last_name": row[1], "email": row[2], "username": row[3], "password": row[4]}
+
+            window.destroy() # close login window
+
+            # import and launch studysoft with the current user
+            globals.CURRENT_USER = user_details
+
+            import studysoft
+            studysoft.showForm_home()
+            studysoft.CURRENT_USER = user_details
+            studysoft.root.mainloop()
+
+
+    frame= tkinter.Frame(window) #creates a frame inside the window
+    frame.pack()
+
+    logInFrame = tkinter.LabelFrame(frame, text="Log-in details") #creates a labelled frame inside the frame
+    logInFrame.grid(row= 0, column=0, padx=20, pady=20) #places the labelled frame at row 0 column 0 of the frame
+    
+    username = tkinter.Label(logInFrame, text="Username:") #creating the username entry
+    username.config(font = ("ariel",15))
+    username.grid(row=0, column=0)
+    usernameEntry = tkinter.Entry(logInFrame)
+    usernameEntry.grid(row=0, column=1)
+
+    password = tkinter.Label(logInFrame, text="Password:") #creating the password entry
+    password.config(font = ("ariel",15))    
+    password.grid(row=1, column=0)
+    passwordEntry = tkinter.Entry(logInFrame, show="*")
+    passwordEntry.grid(row=1, column=1)
+
+    submitButton = tkinter.Button(frame, text="Submit", command=submit) #creating the submit button
+    submitButton.config(font = ("ariel",15))
+    submitButton.grid(row=2, column=0, sticky="news", padx=20, pady=20)
+
+
+def verifyLogIn():
+    conn = sqlite3.connect('user_data.db') 
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM users WHERE username=?", (usernameValue,)) #checking if the username exists in the database
+    if cursor.fetchone() is None:
+        tkinter.messagebox.showerror(title= "Non-existant username", message="Please sign-up as this username does not exist.") #popup error message
+        signUpForm()
+        return False
+    else:
+        conn.close()
+        return True
+
+ 
+#creating the sign up and log in buttons
+signUpbutton = tkinter.Button(window, text = "Sign-up", command= signUpForm) #creates a button called sign in
+signUpbutton.config(font = ("ariel",50),bg = "lightblue",fg = "black") #the sign in button will have the ariel font and size 50
+signUpbutton.pack(side="left", expand=True )
+   
+logInbutton = tkinter.Button(window, text = "Log-in", command = logInForm) #creates a button called log in
+logInbutton.config( font = ("ariel",50),bg = "lightgreen",fg = "black") #the log in button will have the ariel font and size 50
+logInbutton.pack(side="right", expand=True)   
+
+
+window.mainloop() #the application window will continue running until x is pressed and the main loop will stop being exectuted#
+
+if verifyLogIn() == True:
+    #run the main program only if the user has successfully logged in or signed up
+    import studysoft
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ---------- Run ----------
+from random import random
 import tkinter as tk
 from tkinter import ttk, messagebox
 import globals
+import sqlite3
 
 # Current logged-in user (set by caller)
 CURRENT_USER = globals.CURRENT_USER
@@ -25,6 +277,47 @@ sidebar.pack(side="left", fill="y")
 rsidebar = tk.Frame(root, bg="#0f2a3a", width=80)
 rsidebar.pack(side="right", fill="y", expand=True)
 
+# Global variable to store label references for physics form
+physics_labels = {}
+
+def nextQuestion():
+    #display next question from questionDB based on topic selected in dropdown
+    selected_topic = topic.get()
+    if selected_topic == "Select a topic":
+        messagebox.showwarning("Warning", "Please select a topic first")
+        return
+    
+    conn = sqlite3.connect('questions_data.db') #create connection to questions database
+    cursor = conn.cursor()
+    cursor.execute('''SELECT question, answer, difficulty FROM questions WHERE topic=? ORDER BY RANDOM() LIMIT 1''', (selected_topic,)) #select random question from database based on topic selected in dropdown
+    result = cursor.fetchone()
+    conn.close()
+
+    #fetch answers 
+    cursor.execute('''SELECT answer FROM questions WHERE topic=? LIMIT 5''', (selected_topic,))
+    answers = cursor.fetchall()
+    answers.append((result[1],))  # Add the correct answer to the list of answers
+    #1 is the index of the answer in the result tuple (question, answer, difficulty)
+    random.shuffle(answers)  # Shuffle the answers to randomize their order
+
+    
+    if result:
+        question, answer, difficulty = result
+        # Update the labels in physics form
+        if 'question_label' in physics_labels:
+            physics_labels['question_label'].config(text=question)
+        if 'info_label' in physics_labels:
+            physics_labels['info_label'].config(text=f"Topic: {selected_topic}\nDifficulty: {difficulty}")
+        if 'answer_label' in physics_labels:
+            physics_labels['answer_label'].config(text=answer)
+    else:
+        messagebox.showinfo("No Questions", f"No questions found for topic: {selected_topic}")
+
+def on_topic_change(*args): #converts lists into arguements to place into function, this function is called whenever the topic dropdown changes
+    # Callback when topic dropdown changes
+    nextQuestion() 
+
+
 menu_btn = tk.Button(
     rsidebar,
     text="≡",
@@ -38,14 +331,38 @@ menu_btn = tk.Button(
 )
 menu_btn.pack()
 
+topic = tk.StringVar(value="Select a topic")
+topic.trace("w", on_topic_change)  # Trigger on_topic_change whenever topic changes
+selectingqs_dropdown = tk.OptionMenu( #creates dropdown menu for topics
+    rsidebar,
+    topic,
+    "mechanics and material", #topic
+    "electricity", #topic
+    "particle physics", #topic
+    "waves", #topic
+)
+selectingqs_dropdown.pack() 
+
+nextQuestion_btn = tk.Button(
+    rsidebar,
+    text="next q",
+    bg="#0f2a3a",
+    fg="#1fa3c7",
+    activebackground="#143f56",
+    bd=0,
+    font=("Arial", 20),
+    command = nextQuestion,
+    cursor="hand2"
+)
+nextQuestion_btn.pack(pady=20)
+
 homeBtnClicked = False
 statsBtnClicked = False
 physicsBtnClicked = False
 
 def home_clicked():
     global homeBtnClicked
-    homeBtnClicked = True
-    print("Home clicked") 
+    homeBtnClicked = True 
     hideForm_physics()
     hideForm_stats()
     showForm_home()
@@ -54,7 +371,6 @@ def home_clicked():
 def stats_clicked():
     global statsBtnClicked
     statsBtnClicked = True
-    print("Stats clicked")
     hideForm_home()
     hideForm_physics()
     showForm_stats()
@@ -63,7 +379,6 @@ def stats_clicked():
 def physics_clicked():
     global physicsBtnClicked
     physicsBtnClicked = True
-    print("Physics clicked")
     hideForm_home()
     hideForm_stats()
     showForm_physics()
@@ -332,25 +647,30 @@ def showForm_physics():
     #question_header.pack_propagate(False)
     question_header.pack_propagate(True)
 
-    tk.Label(
+    question_label = tk.Label(
         question_header,
-        text="",
+        text="Select a topic to see questions", #the physiscs question will be displayed here when the topic is chose from the dropdown menu on the right sidebar
         bg="#d39ac7",
         fg="black",
         font=(style_dict["font_family"], style_dict["font_size"]),
-        height=2 ,
-        width=30 ,
-    ).pack(side="left", padx=20, pady=30)
+        wraplength=400,
+        justify="left"
+    )
+    question_label.pack(side="left", padx=20, pady=30)
 
-    tk.Label(
+    info_label = tk.Label(
         question_header,
-        text="",
+        text="", #the topic and difficulty of the question will be displayed here when the topic is chose from the dropdown menu on the right sidebar
         bg="#d39ac7",
         fg="black",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        height=2 ,
-        width=30 ,
-    ).pack(side="right", padx=20, pady=30)
+        font=(style_dict["font_family"], 14),
+        justify="right"
+    )
+    info_label.pack(side="right", padx=20, pady=30)
+
+    # Store references globally so nextQuestion() can update them
+    physics_labels['question_label'] = question_label
+    physics_labels['info_label'] = info_label
 
     # ---------------- Answer Area ----------------
     answers_box = tk.Frame(
@@ -361,20 +681,21 @@ def showForm_physics():
         highlightthickness=2
     )
     answers_box.pack(fill="x", padx=40)
-    answers_box.pack_propagate(False)
+    answers_box.pack_propagate(True)
 
-    answers_text = (
-        # Placeholder text for physics answers
-    )
-
-    tk.Label(
+    answer_label = tk.Label(
         answers_box,
-        text=answers_text,
+        text="Answer will appear here",
         bg="#155e7b",
         fg="white",
         font=(style_dict["font_family"], style_dict["font_size"]),
-        justify="left"
-    ).pack(pady=40)
+        justify="left",
+        wraplength=500
+    )
+    answer_label.pack(pady=40, padx=20)
+    
+    # Store answer label reference
+    physics_labels['answer_label'] = answer_label
     
     
 
@@ -425,6 +746,7 @@ def showForm_stats():
         outline="black",
         width=2
     )
+
 
 def create_font_colour_panel():
     form = tk.Tk()
@@ -468,442 +790,7 @@ def create_font_colour_panel():
 if __name__ == "__main__":
     showForm_home()
     root.mainloop()
-
     
-
-    
-
-
-
-
-
-
-
-
-
-# ---------- Run ----------
-import tkinter as tk
-from tkinter import ttk, messagebox
-import globals
-
-# Current logged-in user (set by caller)
-CURRENT_USER = globals.CURRENT_USER
-
-# ---------- style ----------
-style_dict = {
-    "font_size": 20,
-    "font_family": "Arial",
-}
-
-# ---------- Window ----------
-root = tk.Tk()
-root.title("Study software")
-root.geometry("1000x600")
-root.configure(bg="#0b0f14")
-
-# ---------- main Sidebar ----------
-sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
-sidebar.pack(side="left", fill="y")
-# ---------------- Right Sidebar ----------------
-rsidebar = tk.Frame(root, bg="#0f2a3a", width=80)
-rsidebar.pack(side="right", fill="y", expand=True)
-
-menu_btn = tk.Button(
-    rsidebar,
-    text="≡",
-    bg="#0f2a3a",
-    fg="#1fa3c7",
-    activebackground="#143f56",
-    bd=0,
-    font=("Arial", style_dict["font_size"]),
-    command=lambda: create_font_colour_panel(),
-    cursor="hand2"
-)
-menu_btn.pack()
-
-homeBtnClicked = False
-statsBtnClicked = False
-physicsBtnClicked = False
-
-def home_clicked():
-    global homeBtnClicked
-    homeBtnClicked = True
-    print("Home clicked") 
-    hideForm_physics()
-    hideForm_stats()
-    showForm_home()
-
-
-def stats_clicked():
-    global statsBtnClicked
-    statsBtnClicked = True
-    print("Stats clicked")
-    hideForm_home()
-    hideForm_physics()
-    showForm_stats()
-    
-
-def physics_clicked():
-    global physicsBtnClicked
-    physicsBtnClicked = True
-    print("Physics clicked")
-    hideForm_home()
-    hideForm_stats()
-    showForm_physics()
-    
-
-button_style = {
-    "bg": "#0f2a3a",
-    "fg": "#1fa3c7",
-    "activebackground": "#143f56",
-    "activeforeground": "white",
-    "bd": 0,
-    "font": ("Arial", 20),
-    "width": 3,
-    "cursor": "hand2"
-}
-
-home_btn = tk.Button(sidebar, text="🏠", command=home_clicked, **button_style)
-home_btn.pack(pady=30)
-
-stats_btn = tk.Button(sidebar, text="📊", command=stats_clicked, **button_style)
-stats_btn.pack(pady=30)
-
-physics_btn = tk.Button(sidebar, text="🧠", command=physics_clicked, **button_style)
-physics_btn.pack(pady=30)
-
-# ---------- Main Content ----------
-main = tk.Frame(root, bg="white")
-main.pack(side="left", fill="both", expand=True, padx=20, pady=20)
-
-form = tk.Frame(main, bg="white")
-form.pack(anchor="nw", pady=30)
-
-# ---------- Form Section ----------
-def hideForm_home():
-    for child in form.winfo_children():
-        child.forget()
-
-def showForm_home():
-    import sqlite3
-    
-    # Store entry widgets for edit mode
-    entries_dict = {}
-    edit_mode = [False]  # Use list to allow modification in nested function
-    
-    def create_row(label_text, value_text, field_name):
-        row = tk.Frame(form, bg="white")
-        row.pack(anchor="w", pady=10)
-
-        label = tk.Label(
-            row,
-            text=label_text,
-            bg="white",
-            fg="black",
-            font=(style_dict["font_family"], style_dict["font_size"]),
-            width=22,
-            anchor="w"
-        )
-        
-        label.pack(side="left")
-
-        entry = tk.Entry(
-            row,
-            bg="#155e7b",
-            fg="black",
-            font=(style_dict["font_family"], style_dict["font_size"]),
-            relief="flat",
-            width=35,
-        )
-        entry.pack(side="left", padx=20, ipady=6)
-        entry.insert(0, value_text)
-        entry.config(state="readonly")
-        entries_dict[field_name] = entry
-
-    # populate with CURRENT_USER if available
-    first = ""
-    last = ""
-    email = ""
-    username = ""
-    password = ""
-    if CURRENT_USER is not None:
-        first = CURRENT_USER.get("first_name", "")
-        last = CURRENT_USER.get("last_name", "")
-        email = CURRENT_USER.get("email", "")
-        username = CURRENT_USER.get("username", "")
-        password = CURRENT_USER.get("password", "")
-
-    create_row("First Name................", first, "first_name")
-    create_row("Surname...................", last, "last_name")
-    create_row("Email.....................", email, "email")
-    create_row("Username.................", username, "username")
-    
-    # Password row with masked input
-    row = tk.Frame(form, bg="white")
-    row.pack(anchor="w", pady=10)
-    label = tk.Label(
-        row,
-        text="Password.................",
-        bg="white",
-        fg="black",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        width=22,
-        anchor="w"
-    )
-    label.pack(side="left")
-    password_entry = tk.Entry(
-        row,
-        bg="#155e7b",
-        fg="black",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        relief="flat",
-        width=35,
-        show="*",
-    )
-    password_entry.insert(0, password)
-    password_entry.config(state="readonly")
-    password_entry.pack(side="left", padx=20, ipady=6)
-    entries_dict["password"] = password_entry
-    
-    #button frame
-    button_frame = tk.Frame(form, bg="white")
-    button_frame.pack(pady=20)
-    
-    def toggle_edit():
-        if not edit_mode[0]:
-            # Enable edit mode
-            for entry in entries_dict.values():
-                entry.config(state="normal")
-            edit_btn.config(text="Save", command=save_changes)
-            edit_mode[0] = True
-        else:
-            # Save and disable edit mode
-            save_changes()
-    
-    def save_changes():
-        try:
-            # Get updated values from entries
-            updated_data = {
-                "first_name": entries_dict["first_name"].get(),
-                "last_name": entries_dict["last_name"].get(),
-                "email": entries_dict["email"].get(),
-                "password": entries_dict["password"].get()
-            }
-            
-            # Update database
-            conn = sqlite3.connect('user_data.db')
-            cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE users 
-                SET first_name=?, last_name=?, email=?, password=? 
-                WHERE username=?
-            """, (updated_data["first_name"], updated_data["last_name"], 
-                  updated_data["email"], updated_data["password"], 
-                  CURRENT_USER["username"]))
-            conn.commit()
-            conn.close()
-            
-            # Update CURRENT_USER in memory
-            CURRENT_USER["first_name"] = updated_data["first_name"]
-            CURRENT_USER["last_name"] = updated_data["last_name"]
-            CURRENT_USER["email"] = updated_data["email"]
-            CURRENT_USER["password"] = updated_data["password"]
-            
-            # Disable edit mode
-            for entry in entries_dict.values():
-                entry.config(state="readonly")
-            edit_btn.config(text="Edit", command=toggle_edit)
-            edit_mode[0] = False
-            
-            tk.messagebox.showinfo("Success", "Your details have been updated!")
-        except Exception as e:
-            tk.messagebox.showerror("Error", f"Failed to update details: {str(e)}")
-    
-    edit_btn = tk.Button(
-        button_frame,
-        text="Edit",
-        bg="#1fa3c7",
-        fg="white",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        cursor="hand2",
-        command=toggle_edit,
-        padx=20,
-        pady=5
-    )
-    edit_btn.pack(side="left", padx=5)
-
-
-def hideForm_physics():
-    for child in form.winfo_children():
-        child.forget()
-
-def showForm_physics():
-    # ---------------- Left Sidebar ----------------
-
-    icon_style = {
-        "bg": "#0f2a3a",
-        "fg": "#1fa3c7",
-        "activebackground": "#143f56",
-        "bd": 0,
-        "font": (style_dict["font_family"], style_dict["font_size"]),
-        "cursor": "hand2",
-        "width": 3
-    }
-
-    # ---------------- Main Area ----------------
-    main = tk.Frame(form, bg="white")
-    main.pack(side="left", fill="both", expand=True)
-
-    # ---------------- Question Header ----------------
-    question_header = tk.Frame(
-        main,
-        bg="#d39ac7",
-        height=100,
-        highlightbackground="#9b2d91",
-        highlightthickness=2
-    )
-    question_header.pack(fill="x", padx=40, pady=(30, 20), expand=True)
-    #pack_propagate() sets whether the frame should adjust its size to fit its contents
-    #question_header.pack_propagate(False)
-    question_header.pack_propagate(True)
-
-    tk.Label(
-        question_header,
-        text="Physics question",
-        bg="#d39ac7",
-        fg="black",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        height=2 ,
-        width=30 ,
-    ).pack(side="left", padx=20, pady=30)
-
-    tk.Label(
-        question_header,
-        text="Topic, difficulty level",
-        bg="#d39ac7",
-        fg="black",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        height=2 ,
-        width=30 ,
-    ).pack(side="right", padx=20, pady=30)
-
-    # ---------------- Answer Area ----------------
-    answers_box = tk.Frame(
-        main,
-        bg="#155e7b",
-        height=380,
-        highlightbackground="black",
-        highlightthickness=2
-    )
-    answers_box.pack(fill="x", padx=40)
-    answers_box.pack_propagate(False)
-
-    answers_text = (
-        # Placeholder text for physics answers
-    )
-
-    tk.Label(
-        answers_box,
-        text=answers_text,
-        bg="#155e7b",
-        fg="white",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        justify="left"
-    ).pack(pady=40)
-    
-    
-
-def hideForm_stats():
-    for child in form.winfo_children():
-        child.forget()
-
-def showForm_stats():
-    # ---------------- Canvas for Graph ----------------
-    canvas = tk.Canvas(form, bg="white", highlightthickness=0)
-    canvas.pack(fill="both", expand=True)
-
-    # ---------------- Axes ----------------
-    # Y axis
-    canvas.create_line(150, 100, 150, 550, width=2)
-    # X axis
-    canvas.create_line(150, 550, 850, 550, width=2)
-
-    # ---------------- Axis Labels ----------------
-    canvas.create_text(
-        0, 0,
-        text="Number of questions answered correctly weekly",
-        angle=0,
-        font=(style_dict["font_family"], style_dict["font_size"])
-    )
-
-    canvas.create_text(
-        500, 600,
-        text="Number of questions answered weekly",
-        font=(style_dict["font_family"], style_dict["font_size"])
-    )
-    points = []
-    for x, y in points:
-        canvas.create_line(x-6, y-6, x+6, y+6, width=2)
-        canvas.create_line(x-6, y+6, x+6, y-6, width=2)
-
-    # ---------------- Improvement Box ----------------
-    canvas.create_text(
-        900, 200,
-        text="Improvement from last week\npercentage %",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        anchor="nw"
-    )
-    
-    canvas.create_rectangle(
-        900, 260, 1150, 310,
-        fill="#9b2d91",
-        outline="black",
-        width=2
-    )
-
-def create_font_colour_panel():
-    form = tk.Tk()
-    """
-    Creates a panel with font and colour selection dropdowns
-    
-    Parameters:
-    - parent_frame: The frame to place the controls in
-    - target_widget: The widget to apply font/colour changes to
-    """
-    # Control Panel Frame
-    control_frame = tk.Frame(form, bg="#0f2a3a", relief="raised", bd=2)
-    control_frame.pack(pady=10, padx=10, fill="x")
-    
-    # Font Selection
-    font_label = tk.Label(control_frame, text="Font:", fg="#1fa3c7", bg="#0f2a3a")
-    font_label.pack(side="left", padx=5, pady=5)
-    
-    fonts = ["Arial", "Helvetica", "Courier", "Times New Roman", "Segoe UI", "Verdana"]
-    font_var = tk.StringVar(value="Arial")
-    font_dropdown = ttk.Combobox(control_frame, textvariable=font_var, values=fonts, state="readonly", width=12)
-    font_dropdown.pack(side="left", padx=5, pady=5)
-    
-    # Font Size Selection
-    size_label = tk.Label(control_frame, text="Size:", fg="#1fa3c7", bg="#0f2a3a")
-    size_label.pack(side="left", padx=5, pady=5)
-    
-    size_var = tk.StringVar(value="12")
-    size_dropdown = ttk.Combobox(control_frame, textvariable=size_var, values=["10", "12", "14", "16", "18", "20", "24"], state="readonly", width=5)
-    size_dropdown.pack(side="left", padx=5, pady=5)
-
-    #apply button
-    def apply_changes():
-        style_dict["font_family"] = font_var.get()
-        style_dict["font_size"] = int(size_var.get())
-        form.destroy()
-    apply_btn = tk.Button(control_frame, text="Apply", command=apply_changes, bg="#1fa3c7", fg="white", cursor="hand2") 
-    apply_btn.pack(side="left", padx=10, pady=5)
-
-
-if __name__ == "__main__":
-    showForm_home()
-    root.mainloop()
-
 
 
 
@@ -915,3 +802,4 @@ if __name__ == "__main__":
 
 
 CURRENT_USER = {}
+

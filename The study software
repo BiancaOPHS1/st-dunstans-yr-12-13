@@ -249,7 +249,7 @@ if verifyLogIn() == True:
 
 
 # ---------- Run ----------
-from random import random
+import random
 import tkinter as tk
 from tkinter import ttk, messagebox
 import globals
@@ -275,10 +275,16 @@ sidebar = tk.Frame(root, bg="#0f2a3a", width=80)
 sidebar.pack(side="left", fill="y")
 # ---------------- Right Sidebar ----------------
 rsidebar = tk.Frame(root, bg="#0f2a3a", width=80)
-rsidebar.pack(side="right", fill="y", expand=True)
+rsidebar.pack(side="right", fill="y")
 
 # Global variable to store label references for physics form
 physics_labels = {}
+
+def check_answer(selected, correct):
+    if selected == correct:
+        messagebox.showinfo("Result", "Correct!")
+    else:
+        messagebox.showinfo("Result", f"Incorrect. Correct answer: {correct}")
 
 def nextQuestion():
     #display next question from questionDB based on topic selected in dropdown
@@ -287,31 +293,55 @@ def nextQuestion():
         messagebox.showwarning("Warning", "Please select a topic first")
         return
     
-    conn = sqlite3.connect('questions_data.db') #create connection to questions database
+    
+    conn = sqlite3.connect('questions_data.db')
     cursor = conn.cursor()
-    cursor.execute('''SELECT question, answer, difficulty FROM questions WHERE topic=? ORDER BY RANDOM() LIMIT 1''', (selected_topic,)) #select random question from database based on topic selected in dropdown
+    cursor.execute('''SELECT question, answer, difficulty FROM questions WHERE topic=? ORDER BY RANDOM() LIMIT 1''', (selected_topic,))
     result = cursor.fetchone()
+
+    if not result:
+        conn.close()
+        messagebox.showinfo("No Questions", f"No questions found for topic: {selected_topic}")
+        return
+
+    question, correct_answer, difficulty = result
+
+    # Get up to 3 other (wrong) answers from same topic
+    cursor.execute('''SELECT DISTINCT answer FROM questions WHERE topic=? AND answer<>? ORDER BY RANDOM() LIMIT 3''', (selected_topic, correct_answer))
+    wrongs = [row[0] for row in cursor.fetchall()]
+
+    # If there are not enough wrongs, try to pull more answers (allow duplicates if necessary)
+    # if len(wrongs) < 3:
+    #     cursor.execute('''SELECT DISTINCT answer FROM questions WHERE topic=? ORDER BY RANDOM()''', (selected_topic,))
+    #     all_answers = [row[0] for row in cursor.fetchall() if row[0] != correct_answer]
+    #     for a in all_answers:
+    #         if a not in wrongs:
+    #             wrongs.append(a)
+    #         if len(wrongs) >= 3:
+    #             break
+
+    # Build options list (3 wrong + correct), ensure length 4
+    options = wrongs[:3] + [correct_answer]
+    while len(options) < 4:
+        options.append(correct_answer)
+
+    random.shuffle(options)
     conn.close()
 
-    #fetch answers 
-    cursor.execute('''SELECT answer FROM questions WHERE topic=? LIMIT 5''', (selected_topic,))
-    answers = cursor.fetchall()
-    answers.append((result[1],))  # Add the correct answer to the list of answers
-    #1 is the index of the answer in the result tuple (question, answer, difficulty)
-    random.shuffle(answers)  # Shuffle the answers to randomize their order
+    # Update the labels in physics form
+    if 'question_label' in physics_labels:
+        physics_labels['question_label'].config(text=question)
+    if 'info_label' in physics_labels:
+        physics_labels['info_label'].config(text=f"Topic: {selected_topic}\nDifficulty: {difficulty}")
 
-    
-    if result:
-        question, answer, difficulty = result
-        # Update the labels in physics form
-        if 'question_label' in physics_labels:
-            physics_labels['question_label'].config(text=question)
-        if 'info_label' in physics_labels:
-            physics_labels['info_label'].config(text=f"Topic: {selected_topic}\nDifficulty: {difficulty}")
-        if 'answer_label' in physics_labels:
-            physics_labels['answer_label'].config(text=answer)
+    # Populate answer buttons (create if missing)
+    if 'answer_buttons' in physics_labels:
+        for btn, opt in zip(physics_labels['answer_buttons'], options):
+            btn.config(text=opt, command=lambda opt=opt, correct=correct_answer: check_answer(opt, correct))
     else:
-        messagebox.showinfo("No Questions", f"No questions found for topic: {selected_topic}")
+        # If buttons don't exist yet (form not shown), create a simple fallback label
+        if 'answer_label' in physics_labels:
+            physics_labels['answer_label'].config(text='\n'.join(options))
 
 def on_topic_change(*args): #converts lists into arguements to place into function, this function is called whenever the topic dropdown changes
     # Callback when topic dropdown changes
@@ -683,19 +713,29 @@ def showForm_physics():
     answers_box.pack(fill="x", padx=40)
     answers_box.pack_propagate(True)
 
-    answer_label = tk.Label(
-        answers_box,
-        text="Answer will appear here",
-        bg="#155e7b",
-        fg="white",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        justify="left",
-        wraplength=500
-    )
-    answer_label.pack(pady=40, padx=20)
-    
-    # Store answer label reference
-    physics_labels['answer_label'] = answer_label
+    # Create four answer buttons (options will be filled by nextQuestion)
+    answer_buttons = []
+    for i in range(4):
+        btn = tk.Button(
+            answers_box,
+            text=f"Option {i+1}",
+            bg="#1fa3c7",
+            fg="white",
+            font=(style_dict["font_family"], style_dict["font_size"] - 2),
+            wraplength=500,
+            anchor="w",
+            justify="left",
+            relief="raised",
+            bd=2,
+            padx=10,
+            pady=10,
+            command=lambda: None,
+            cursor="hand2"
+        )
+        btn.pack(fill="x", padx=20, pady=6)
+        answer_buttons.append(btn)
+
+    physics_labels['answer_buttons'] = answer_buttons
     
     
 
@@ -790,7 +830,6 @@ def create_font_colour_panel():
 if __name__ == "__main__":
     showForm_home()
     root.mainloop()
-    
 
 
 

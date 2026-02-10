@@ -258,6 +258,13 @@ import sqlite3
 # Current logged-in user (set by caller)
 CURRENT_USER = globals.CURRENT_USER
 
+# Track the previous question ID to prevent duplicates
+previous_question_id = None
+
+# Track points
+totalpoints = 0
+correctpoints = 0
+
 # ---------- style ----------
 style_dict = {
     "font_size": 20,
@@ -281,13 +288,20 @@ rsidebar.pack(side="right", fill="y")
 physics_labels = {}
 
 def check_answer(selected, correct):
+    global totalpoints, correctpoints
+    
+    totalpoints += 1  # Increment total points for every question answered
+    
     if selected == correct:
-        messagebox.showinfo("Result", "Correct!")
+        correctpoints += 1  # Increment correct points only for correct answers
+        messagebox.showinfo("Result", f"Correct!\n\nTotal Points: {totalpoints} | Correct Points: {correctpoints}")
     else:
-        messagebox.showinfo("Result", f"Incorrect. Correct answer: {correct}")
+        messagebox.showinfo("Result", f"Incorrect. Correct answer: {correct}\n\nTotal Points: {totalpoints} | Correct Points: {correctpoints}")
 
 def nextQuestion():
     #display next question from questionDB based on topic selected in dropdown
+    global previous_question_id
+    
     selected_topic = topic.get()
     if selected_topic == "Select a topic":
         messagebox.showwarning("Warning", "Please select a topic first")
@@ -296,7 +310,17 @@ def nextQuestion():
     
     conn = sqlite3.connect('questions_data.db')
     cursor = conn.cursor()
-    cursor.execute('''SELECT question, answer, difficulty FROM questions WHERE topic=? ORDER BY RANDOM() LIMIT 1''', (selected_topic,))
+    
+    # Get a random question that is NOT the previous question
+    if previous_question_id is not None:
+        cursor.execute('''SELECT questionsID, question, answer, difficulty 
+                       FROM questions WHERE topic=? AND questionsID<>? 
+                       ORDER BY RANDOM() LIMIT 1''', (selected_topic, previous_question_id))
+    else:
+        cursor.execute('''SELECT questionsID, question, answer, difficulty 
+                       FROM questions WHERE topic=? 
+                       ORDER BY RANDOM() LIMIT 1''', (selected_topic,))
+    
     result = cursor.fetchone()
 
     if not result:
@@ -304,21 +328,14 @@ def nextQuestion():
         messagebox.showinfo("No Questions", f"No questions found for topic: {selected_topic}")
         return
 
-    question, correct_answer, difficulty = result
+    question_id, question, correct_answer, difficulty = result
+    
+    # Update the previous question ID
+    previous_question_id = question_id
 
     # Get up to 3 other (wrong) answers from same topic
     cursor.execute('''SELECT DISTINCT answer FROM questions WHERE topic=? AND answer<>? ORDER BY RANDOM() LIMIT 3''', (selected_topic, correct_answer))
     wrongs = [row[0] for row in cursor.fetchall()]
-
-    # If there are not enough wrongs, try to pull more answers (allow duplicates if necessary)
-    # if len(wrongs) < 3:
-    #     cursor.execute('''SELECT DISTINCT answer FROM questions WHERE topic=? ORDER BY RANDOM()''', (selected_topic,))
-    #     all_answers = [row[0] for row in cursor.fetchall() if row[0] != correct_answer]
-    #     for a in all_answers:
-    #         if a not in wrongs:
-    #             wrongs.append(a)
-    #         if len(wrongs) >= 3:
-    #             break
 
     # Build options list (3 wrong + correct), ensure length 4
     options = wrongs[:3] + [correct_answer]
@@ -830,8 +847,6 @@ def create_font_colour_panel():
 if __name__ == "__main__":
     showForm_home()
     root.mainloop()
-
-
 
 
 

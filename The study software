@@ -265,10 +265,15 @@ previous_question_id = None
 totalpoints = 0
 correctpoints = 0
 
-# Difficulty tracking (per-topic)
-difficulty_levels = ["easy", "medium", "hard"]
-# map topic -> index in difficulty_levels (0=easy,1=medium,2=hard)
+# Difficulty tracking (per-topic).
+# We'll read available difficulties for each topic from the DB and order them
+# by a canonical preference when present.
+canonical_difficulty_order = ["easy", "medium", "hard"]
+# map topic -> ordered list of difficulty strings available in DB for that topic
+difficulty_options_by_topic = {}
+# map topic -> index into the topic's difficulty options list
 difficulty_index_by_topic = {}
+# default index (medium if available)
 default_difficulty_index = 1
 
 # ---------- style ----------
@@ -294,7 +299,7 @@ rsidebar.pack(side="right", fill="y")
 physics_labels = {}
 
 def check_answer(selected, correct):
-    global totalpoints, correctpoints, difficulty_index_by_topic
+    global totalpoints, correctpoints, difficulty_index_by_topic, difficulty_options_by_topic
 
     totalpoints += 1  # Increment total points for every question answered
 
@@ -304,19 +309,39 @@ def check_answer(selected, correct):
     except Exception:
         selected_topic = None
 
-    # current index (default to medium)
+    # Ensure we have difficulty options for this topic
+    options = difficulty_options_by_topic.get(selected_topic)
+    if not options:
+        try:
+            conn = sqlite3.connect('questions_data.db')
+            cur = conn.cursor()
+            cur.execute('SELECT DISTINCT difficulty FROM questions WHERE topic=?', (selected_topic,))
+            rows = [r[0] for r in cur.fetchall() if r[0] is not None]
+            conn.close()
+        except Exception:
+            rows = []
+
+        ordered = [d for d in canonical_difficulty_order if d in rows]
+        others = [d for d in rows if d not in ordered]
+        options = ordered + sorted(others)
+        difficulty_options_by_topic[selected_topic] = options
+
+    # current index (default to default_difficulty_index)
     idx = difficulty_index_by_topic.get(selected_topic, default_difficulty_index)
+    idx = max(0, min(idx, len(options) - 1)) if options else default_difficulty_index
 
     if selected == correct:
-        correctpoints += 1  # Increment correct points only for correct answers
-        # increase difficulty (bounded)
-        idx = min(idx + 1, len(difficulty_levels) - 1)
-        difficulty_index_by_topic[selected_topic] = idx
+        correctpoints += 1
+        # increase difficulty (bounded by available options)
+        if options:
+            idx = min(idx + 1, len(options) - 1)
+            difficulty_index_by_topic[selected_topic] = idx
         messagebox.showinfo("Result", f"Correct!\n\nTotal Points: {totalpoints} | Correct Points: {correctpoints}")
     else:
         # decrease difficulty (bounded)
-        idx = max(idx - 1, 0)
-        difficulty_index_by_topic[selected_topic] = idx
+        if options:
+            idx = max(idx - 1, 0)
+            difficulty_index_by_topic[selected_topic] = idx
         messagebox.showinfo("Result", f"Incorrect. Correct answer: {correct}\n\nTotal Points: {totalpoints} | Correct Points: {correctpoints}")
 
     # present the next question after updating difficulty
@@ -334,21 +359,34 @@ def nextQuestion():
     
     conn = sqlite3.connect('questions_data.db')
     cursor = conn.cursor()
-    # choose difficulty for this topic (default medium)
+
+    # Ensure we have difficulty options for this topic
+    options = difficulty_options_by_topic.get(selected_topic)
+    if not options:
+        cursor.execute('SELECT DISTINCT difficulty FROM questions WHERE topic=?', (selected_topic,))
+        rows = [r[0] for r in cursor.fetchall() if r[0] is not None]
+        ordered = [d for d in canonical_difficulty_order if d in rows]
+        others = [d for d in rows if d not in ordered]
+        options = ordered + sorted(others)
+        difficulty_options_by_topic[selected_topic] = options
+
     desired_idx = difficulty_index_by_topic.get(selected_topic, default_difficulty_index)
-    desired_difficulty = difficulty_levels[desired_idx]
+    desired_idx = max(0, min(desired_idx, len(options) - 1)) if options else default_difficulty_index
+    desired_difficulty = options[desired_idx] if options else None
 
     # Try to get a question matching the desired difficulty (and not the previous question)
-    if previous_question_id is not None:
-        cursor.execute('''SELECT questionsID, question, answer, difficulty 
-                       FROM questions WHERE topic=? AND difficulty=? AND questionsID<>? 
-                       ORDER BY RANDOM() LIMIT 1''', (selected_topic, desired_difficulty, previous_question_id))
+    if desired_difficulty:
+        if previous_question_id is not None:
+            cursor.execute('''SELECT questionsID, question, answer, difficulty 
+                           FROM questions WHERE topic=? AND difficulty=? AND questionsID<>? 
+                           ORDER BY RANDOM() LIMIT 1''', (selected_topic, desired_difficulty, previous_question_id))
+        else:
+            cursor.execute('''SELECT questionsID, question, answer, difficulty 
+                           FROM questions WHERE topic=? AND difficulty=? 
+                           ORDER BY RANDOM() LIMIT 1''', (selected_topic, desired_difficulty))
+        result = cursor.fetchone()
     else:
-        cursor.execute('''SELECT questionsID, question, answer, difficulty 
-                       FROM questions WHERE topic=? AND difficulty=? 
-                       ORDER BY RANDOM() LIMIT 1''', (selected_topic, desired_difficulty))
-
-    result = cursor.fetchone()
+        result = None
 
     # If no question of the desired difficulty exists, fall back to any question in topic
     if not result:
@@ -892,7 +930,6 @@ def create_font_colour_panel():
 if __name__ == "__main__":
     showForm_home()
     root.mainloop()
-
 
 
 

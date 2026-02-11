@@ -265,6 +265,12 @@ previous_question_id = None
 totalpoints = 0
 correctpoints = 0
 
+# Difficulty tracking (per-topic)
+difficulty_levels = ["easy", "medium", "hard"]
+# map topic -> index in difficulty_levels (0=easy,1=medium,2=hard)
+difficulty_index_by_topic = {}
+default_difficulty_index = 1
+
 # ---------- style ----------
 style_dict = {
     "font_size": 20,
@@ -288,15 +294,33 @@ rsidebar.pack(side="right", fill="y")
 physics_labels = {}
 
 def check_answer(selected, correct):
-    global totalpoints, correctpoints
-    
+    global totalpoints, correctpoints, difficulty_index_by_topic
+
     totalpoints += 1  # Increment total points for every question answered
-    
+
+    # determine topic for which to adjust difficulty
+    try:
+        selected_topic = topic.get()
+    except Exception:
+        selected_topic = None
+
+    # current index (default to medium)
+    idx = difficulty_index_by_topic.get(selected_topic, default_difficulty_index)
+
     if selected == correct:
         correctpoints += 1  # Increment correct points only for correct answers
+        # increase difficulty (bounded)
+        idx = min(idx + 1, len(difficulty_levels) - 1)
+        difficulty_index_by_topic[selected_topic] = idx
         messagebox.showinfo("Result", f"Correct!\n\nTotal Points: {totalpoints} | Correct Points: {correctpoints}")
     else:
+        # decrease difficulty (bounded)
+        idx = max(idx - 1, 0)
+        difficulty_index_by_topic[selected_topic] = idx
         messagebox.showinfo("Result", f"Incorrect. Correct answer: {correct}\n\nTotal Points: {totalpoints} | Correct Points: {correctpoints}")
+
+    # present the next question after updating difficulty
+    nextQuestion()
 
 def nextQuestion():
     #display next question from questionDB based on topic selected in dropdown
@@ -310,18 +334,33 @@ def nextQuestion():
     
     conn = sqlite3.connect('questions_data.db')
     cursor = conn.cursor()
-    
-    # Get a random question that is NOT the previous question
+    # choose difficulty for this topic (default medium)
+    desired_idx = difficulty_index_by_topic.get(selected_topic, default_difficulty_index)
+    desired_difficulty = difficulty_levels[desired_idx]
+
+    # Try to get a question matching the desired difficulty (and not the previous question)
     if previous_question_id is not None:
         cursor.execute('''SELECT questionsID, question, answer, difficulty 
-                       FROM questions WHERE topic=? AND questionsID<>? 
-                       ORDER BY RANDOM() LIMIT 1''', (selected_topic, previous_question_id))
+                       FROM questions WHERE topic=? AND difficulty=? AND questionsID<>? 
+                       ORDER BY RANDOM() LIMIT 1''', (selected_topic, desired_difficulty, previous_question_id))
     else:
         cursor.execute('''SELECT questionsID, question, answer, difficulty 
-                       FROM questions WHERE topic=? 
-                       ORDER BY RANDOM() LIMIT 1''', (selected_topic,))
-    
+                       FROM questions WHERE topic=? AND difficulty=? 
+                       ORDER BY RANDOM() LIMIT 1''', (selected_topic, desired_difficulty))
+
     result = cursor.fetchone()
+
+    # If no question of the desired difficulty exists, fall back to any question in topic
+    if not result:
+        if previous_question_id is not None:
+            cursor.execute('''SELECT questionsID, question, answer, difficulty 
+                           FROM questions WHERE topic=? AND questionsID<>? 
+                           ORDER BY RANDOM() LIMIT 1''', (selected_topic, previous_question_id))
+        else:
+            cursor.execute('''SELECT questionsID, question, answer, difficulty 
+                           FROM questions WHERE topic=? 
+                           ORDER BY RANDOM() LIMIT 1''', (selected_topic,))
+        result = cursor.fetchone()
 
     if not result:
         conn.close()
@@ -362,6 +401,12 @@ def nextQuestion():
 
 def on_topic_change(*args): #converts lists into arguements to place into function, this function is called whenever the topic dropdown changes
     # Callback when topic dropdown changes
+    # Reset difficulty for this topic to default when user selects it
+    try:
+        selected_topic = topic.get()
+        difficulty_index_by_topic[selected_topic] = default_difficulty_index
+    except Exception:
+        pass
     nextQuestion() 
 
 
@@ -383,7 +428,7 @@ topic.trace("w", on_topic_change)  # Trigger on_topic_change whenever topic chan
 selectingqs_dropdown = tk.OptionMenu( #creates dropdown menu for topics
     rsidebar,
     topic,
-    "mechanics and material", #topic
+    "mechanics and materials", #topic
     "electricity", #topic
     "particle physics", #topic
     "waves", #topic

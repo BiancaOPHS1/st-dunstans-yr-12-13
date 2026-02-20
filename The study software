@@ -768,48 +768,51 @@ def hideForm_stats():
         child.forget()
 
 def showForm_stats():
-    # ---------------- Canvas for Graph ----------------
-    canvas = tk.Canvas(form, bg="white", highlightthickness=0)
-    canvas.pack(fill="both", expand=True)
+   import tkinter as tk
+   from tkinter import ttk
+   import numpy as np
+   import matplotlib
+   matplotlib.use("TkAgg")  # Use Tkinter backend
+   from matplotlib.figure import Figure
+   from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+   import time
 
-    # ---------------- Axes ----------------
-    # Y axis
-    canvas.create_line(150, 100, 150, 550, width=2)
-    # X axis
-    canvas.create_line(150, 550, 850, 550, width=2)
+   class DynamicGraph:
+    def __init__(self, form):
+        self.main = form
+        self.main.title("Dynamic Graph in Tkinter")
+        self.main.geometry("800x600")
 
-    # ---------------- Axis Labels ----------------
-    canvas.create_text(
-        0, 0,
-        text="Number of questions answered correctly weekly",
-        angle=0,
-        font=(style_dict["font_family"], style_dict["font_size"])
-    )
+        # Create a Matplotlib figure
+        self.fig = Figure(figsize=(6, 4), dpi=100)
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_title("Live Sine Wave")
+        self.ax.set_xlabel("Time (s)")
+        self.ax.set_ylabel("Amplitude")
 
-    canvas.create_text(
-        500, 600,
-        text="Number of questions answered weekly",
-        font=(style_dict["font_family"], style_dict["font_size"])
-    )
-    points = []
-    for x, y in points:
-        canvas.create_line(x-6, y-6, x+6, y+6, width=2)
-        canvas.create_line(x-6, y+6, x+6, y-6, width=2)
+        # Initial data
+        self.x_data = []
+        self.y_data = []
+        self.start_time = time.time()
 
-    # ---------------- Improvement Box ----------------
-    canvas.create_text(
-        900, 200,
-        text="Improvement from last week\npercentage %",
-        font=(style_dict["font_family"], style_dict["font_size"]),
-        anchor="nw"
-    )
-    
-    canvas.create_rectangle(
-        900, 260, 1150, 310,
-        fill="#9b2d91",
-        outline="black",
-        width=2
-    )
+        # Create the line object
+        (self.line,) = self.ax.plot([], [], color="blue")
+
+        # Embed the figure in Tkinter
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.main)
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+        # Start updating the graph
+        self.update_graph()
+
+        if __name__ == "__main__":
+            form = tk.Tk()
+            app = DynamicGraph(form)
+            form.mainloop()
+
+
+
+  
 
 
 def create_font_colour_panel():

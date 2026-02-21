@@ -255,6 +255,50 @@ from tkinter import ttk, messagebox
 import globals
 import sqlite3
 
+# --- graph database setup ---
+graph_db = 'graph.db'
+
+def init_graph_db():
+    #Create the graph table if it doesn't exist. This table will store the history of total and correct points for each question answered, along with a timestamp.
+    conn = sqlite3.connect(graph_db)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS graph (
+            graph_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            question_id INTEGER,
+            totalpoints INTEGER,
+            correctpoints INTEGER,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(question_id) REFERENCES questions(questionsID)
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+
+def load_stats_history_from_db():
+    #Return a list of tuples ordered by insertion time, which will be used to populate the graph. 
+    #This allows the graph to reflect the entire history of quiz performance, even across sessions.
+    conn = sqlite3.connect(graph_db)
+    cursor = conn.cursor()
+    cursor.execute('SELECT totalpoints, correctpoints FROM graph ORDER BY graph_id')
+    rows = cursor.fetchall()
+    conn.close()
+    return [(int(t), int(c)) for t, c in rows]
+
+
+def record_stats_to_db(question_id, total, correct):
+    conn = sqlite3.connect(graph_db)
+    cursor = conn.cursor()
+    cursor.execute(
+        'INSERT INTO graph (question_id, totalpoints, correctpoints) VALUES (?,?,?)',
+        (question_id, total, correct)
+    )
+    conn.commit()
+    conn.close()
+
+
+
 # Current logged-in user (set by caller)
 CURRENT_USER = globals.CURRENT_USER
 
@@ -267,6 +311,13 @@ current_difficulty = 1
 # Track points
 totalpoints = 0
 correctpoints = 0
+
+# current question for recording graph entries
+current_question_id = None
+
+# initialize graph database and history
+init_graph_db()
+stats_history = load_stats_history_from_db()
 
 # ---------- style ----------
 style_dict = {
@@ -291,7 +342,7 @@ rsidebar.pack(side="right", fill="y")
 physics_labels = {}
 
 def check_answer(selected, correct):
-    global totalpoints, correctpoints
+    global totalpoints, correctpoints, current_question_id
     
     totalpoints += 1  # Increment total points for every question answered
     
@@ -303,6 +354,10 @@ def check_answer(selected, correct):
     else:
         current_difficulty = max(current_difficulty - 1, 1)  # Decrease difficulty, min 1
         messagebox.showinfo("Result", f"Incorrect. Correct answer: {correct}\n\nTotal Points: {totalpoints} | Correct Points: {correctpoints}")
+    # record stats history for graph updates
+    stats_history.append((totalpoints, correctpoints))
+    # also persist new record to database
+    record_stats_to_db(current_question_id, totalpoints, correctpoints)
 
 def nextQuestion():
     #display next question from questionDB based on topic selected in dropdown
@@ -336,6 +391,10 @@ def nextQuestion():
 
     question_id, question, correct_answer, difficulty = result
     
+    # store current question for stats recording
+    global current_question_id
+    current_question_id = question_id
+
     # Update the previous question ID
     previous_question_id = question_id
 
@@ -776,43 +835,64 @@ def showForm_stats():
    from matplotlib.figure import Figure
    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
    import time
+   import random
 
    class DynamicGraph:
-    def __init__(self, form):
-        self.main = form
-        self.main.title("Dynamic Graph in Tkinter")
-        self.main.geometry("800x600")
+       #The graph shows total and correct points over time.
+       
+       def __init__(self, parent):
+           self.parent = parent
+           # create figure and axes
+           self.fig = Figure(figsize=(6, 4), dpi=100)
+           self.ax = self.fig.add_subplot(111)
+           self.ax.set_title("Quiz Performance")
+           self.ax.set_xlabel("Question #")
+           self.ax.set_ylabel("Points")
 
-        # Create a Matplotlib figure
-        self.fig = Figure(figsize=(6, 4), dpi=100)
-        self.ax = self.fig.add_subplot(111)
-        self.ax.set_title("Live Sine Wave")
-        self.ax.set_xlabel("Time (s)")
-        self.ax.set_ylabel("Amplitude")
+           # two lines: total and correct
+           self.line_total, = self.ax.plot([], [], label="Total Points")
+           self.line_correct, = self.ax.plot([], [], label="Correct Points")
+           self.ax.legend(loc="upper left")
 
-        # Initial data
-        self.x_data = []
-        self.y_data = []
-        self.start_time = time.time()
+           # canvas inside tkinter
+           self.canvas = FigureCanvasTkAgg(self.fig, master=self.parent)
+           self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
-        # Create the line object
-        (self.line,) = self.ax.plot([], [], color="blue")
+           # schedule the first refresh
+           self.parent.after(500, self.refresh)
 
-        # Embed the figure in Tkinter
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self.main)
-        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+       def refresh(self):
+           # read latest history from database so it's always up-to-date
+           global stats_history
+           stats_history = load_stats_history_from_db()
+           xs = list(range(1, len(stats_history) + 1))
+           ys_total = [t for t, c in stats_history]
+           ys_correct = [c for t, c in stats_history]
 
-        # Start updating the graph
-        self.update_graph()
+           if xs:
+               self.line_total.set_data(xs, ys_total)
+               self.line_correct.set_data(xs, ys_correct)
+               # adjust axes
+               self.ax.set_xlim(1, max(10, xs[-1]))
+               ymax = max(max(ys_total, default=0), max(ys_correct, default=0)) + 1
+               self.ax.set_ylim(0, ymax)
+           # redraw canvas
+           self.canvas.draw()
+           # schedule next update
+           self.parent.after(500, self.refresh)
 
-        if __name__ == "__main__":
-            form = tk.Tk()
-            app = DynamicGraph(form)
-            form.mainloop()
+   #end DynamicGraph class
 
+   # clear form area
+   for child in form.winfo_children():
+       child.forget()
 
+   # frame to hold the graph and any controls
+   stats_frame = tk.Frame(form, bg="white")
+   stats_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-  
+   # instantiate the dynamic graph
+   dg = DynamicGraph(stats_frame)
 
 
 def create_font_colour_panel():
@@ -857,7 +937,6 @@ def create_font_colour_panel():
 if __name__ == "__main__":
     showForm_home()
     root.mainloop()
-
 
 
 

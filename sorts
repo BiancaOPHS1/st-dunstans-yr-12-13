@@ -50,3 +50,23 @@ list1(array)
 print(array)
 
 bubbleSort(array)
+
+
+#---------------------------------------------------------------------------
+
+#insertion sort
+
+def insertionSort(array):
+    for i in range(0,len(array)-1):
+        current =array[i]
+        position = i
+        while position >0 and array[position-1]> current:
+            array[position]=array[position-1]
+            position = position -1
+        array[position]= current
+
+    print(array)
+
+insertionSort(array)
+
+#----------------------------------------------------------------------------

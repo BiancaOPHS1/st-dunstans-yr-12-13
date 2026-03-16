@@ -1,0 +1,26 @@
+temps = [
+    [[20,22,21],[19,21,20],[23,24,22],[28,20,19]],
+    [[21,23,21],[20,22,21],[24,25,23],[19,21,21]],
+    [[22,24,23],[21,23,21],[25,26,24],[20,22,21]],
+]
+
+temp_average = []
+
+def averageTemp(temp_average):
+    for i in range(len(temps)):
+        total = temps[i][0] + temps[i][1] + temps[i][2]
+        average = total/3
+        temp_average.append(average)
+
+
+def highestTemp(temp_average):
+    for i in range(len(temp_average)):
+        if temp_average[i] > temp_average[i+1]:
+            tempval = temp_average[i]
+            temp_average[i] = temp_average[i+1]
+            temp_average[i+1] = tempval
+        return temp_average[11]
+
+averageTemp(temp_average)
+highestTemp(temp_average)
+

@@ -1,0 +1,21 @@
+#-------calculator--------
+
+#addition
+add = "+"
+
+#substraction
+sub = "-"
+
+#division
+divi = "/","÷"
+
+#multiplication
+mult = "*","x"
+
+calculation = str(input("enter the calculation"))
+
+list = calculation.split()
+print(list)
+
+for i in range(len(list)):
+    if list[i] in "+-*x/÷":

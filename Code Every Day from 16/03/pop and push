@@ -1,0 +1,38 @@
+stack = ["","","","","","","","","",""]
+
+stack[0] = 21
+stack[1] = 68
+stack[2] = 2
+
+headpointer = 2
+
+def pop(headpointer,stack):
+    if headpointer < 0:
+        return False
+    else:
+        stack[headpointer] = ""
+        headpointer = headpointer -1
+    print(stack)
+
+def push(headpointer, stack):
+    number = int(input("enter an integar number"))
+    if headpointer == 9:
+        return False
+    else:
+        stack[headpointer +1] = number
+        headpointer = headpointer + 1
+    print(stack)
+
+choice = input("do you want to pop or push from stack")
+
+def menuSystem():
+    while True:
+        choice = input("do you want to pop or push")
+        if choice == "pop":
+            pop(headpointer, stack)
+        elif choice == "push":
+            push(headpointer, stack)
+
+
+menuSystem()
+
